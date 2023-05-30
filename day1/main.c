@@ -4,24 +4,11 @@
 
 int main() {
   FILE * fp;
-  char * line = NULL;
-  size_t len = 0;
-  ssize_t read;
-
+  int bufferLength = 255;
+  char buffer[bufferLength];
   fp = fopen("input", "r");
-  if(fp == NULL){
-    exit(EXIT_FAILURE);
+  while(fgets(buffer, bufferLength, fp)){
+    printf("%s",buffer);
   }
-
-  while((read = getline(&line, &len, fp)) != 1){
-    // printf("Read line of length %zu\n", read);
-    printf("%s", line);
-    line++;
-  }
-
   fclose(fp);
-  if(line){
-    free(line);
-  }
-  exit(EXIT_SUCCESS);
 }

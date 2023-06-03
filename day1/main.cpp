@@ -1,3 +1,4 @@
+#include <string.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,14 +14,12 @@ int main() {
 
   fp = fopen("input", "r");
   while (fgets(buffer, bufferLength, fp)) {
-    int str_size = get_string_size(buffer, bufferLength);
-    // 120
-    // len 3
-    // 3,2,1 -> pow of 5
-    printf("size of string %lu", sizeof(buffer));
+    // int str_size = get_string_size(buffer, bufferLength);
     char s[] = "1=-0-2";
+    int str_size = strlen(s);
     double result = snafu_to_int(s, str_size);
     printf("result is %f", result);
+    printf("should be %i", 1747);
     break;
   }
   fclose(fp);

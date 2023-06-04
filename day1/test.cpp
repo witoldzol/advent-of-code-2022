@@ -1,3 +1,4 @@
+#include <cstring>
 #include <stdio.h>
 #include "munit.h"
 #include "d1.h"
@@ -24,7 +25,7 @@ test_compare(const MunitParameter params[], void* data) {
   long n = 1;
   decimal_to_snafu(n, output);
   printf("outpout is : %s\n", output);
-  // munit_assert(output[0] == '1');
+  munit_assert_true(!strcmp(output, "100")); //strcmp returns 0 if equal, so negate it
 
   return MUNIT_OK;
 }

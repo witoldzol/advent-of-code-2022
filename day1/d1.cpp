@@ -63,8 +63,7 @@ void decimal_to_snafu(long input, char *output) {
      100 -> 100/5 = 20 > 9 == true, add 0, divide again 20/5 => 4 < 0 == true,
      map(4) + 0 + 0 > 1-00 (125-25)
    */
-  input = 388888;
-  char input_as_str[255];
+  input = 100;
   sprintf(output, "%ld", input);
 }
 

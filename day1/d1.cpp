@@ -65,7 +65,7 @@ void decimal_to_snafu(long input, char *output) {
    */
   input = 388888;
   char input_as_str[255];
-  sprintf(input_as_str, "%ld", input);
+  sprintf(output, "%ld", input);
 }
 
 void decimal_to_snafu_map(int n, char *output) {

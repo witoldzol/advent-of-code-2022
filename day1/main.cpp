@@ -4,30 +4,26 @@
 #include <stdlib.h>
 
 int get_string_size(char *s, int max_size);
-double snafu_to_int(char *s, int size);
+long snafu_to_int(char *s, int size);
 int snafu_map(char n);
 
 int main() {
   FILE *fp;
   int bufferLength = 50;
   char buffer[bufferLength];
-  int result = 0;
+  long result = 0;
 
   fp = fopen("input", "r");
   while (fgets(buffer, bufferLength, fp)) {
-    // int str_size = get_string_size(buffer, bufferLength);
-    // char s[] = "2=0=";
     int str_size = strlen(buffer)-1;
-    // printf("str len is : %i\n", str_size);
-    // printf("char at 17 is %i\n", buffer[16]);
     result += snafu_to_int(buffer, str_size);
   }
   fclose(fp);
-  printf("result is %i", result);
+  printf("result is %ld\n", result);
 }
 
-double snafu_to_int(char *s, int size) {
-  double result=0;
+long snafu_to_int(char *s, int size) {
+  long double result=0;
   double snafu_at_position_i;
   for (int i = size, y = 0; i > 0; i--, y++) {
     double base_value = pow(5, y);
@@ -38,7 +34,7 @@ double snafu_to_int(char *s, int size) {
   }
   printf("\n");
   printf("string is : %s\n", s);
-  printf("snafu value is : %f\n", result);
+  printf("snafu value is : %Lf\n", result);
   printf("=====================\n");
   return result;
 }

@@ -1,6 +1,6 @@
+#include <math.h>
 #include <stdio.h>
 #include <string.h>
-#include <math.h>
 
 int snafu_map(char n) {
   switch (n) {
@@ -17,7 +17,6 @@ int snafu_map(char n) {
   }
   return -9; // error
 }
-
 
 long snafu_to_int(char *s) {
   int size = strlen(s) - 1; // strlen counts \n, so we remove it from calc
@@ -37,6 +36,42 @@ long snafu_to_int(char *s) {
   return result;
 }
 
+void decimal_to_snafu_map(int n, char *output) {
+  printf("decimal n is %d\n", n);
+  switch (n) {
+  case 0:
+    strcpy(output, "0");
+    break;
+  case 1:
+    strcpy(output, "1");
+    break;
+  case 2:
+    strcpy(output, "2");
+    break;
+  case 3:
+    strcpy(output, "1=");
+    break;
+  case 4:
+    strcpy(output, "1-");
+    break;
+  case 5:
+    strcpy(output, "10");
+    break;
+  case 6:
+    strcpy(output, "11");
+    break;
+  case 7:
+    strcpy(output, "12");
+    break;
+  case 8:
+    strcpy(output, "2=");
+    break;
+  case 9:
+    strcpy(output, "2-");
+    break;
+  }
+  printf("output in mapper  is %s\n", output);
+}
 void decimal_to_snafu(long input, char *output) {
   // char foo[] = "wow";
   // strcpy(output, foo);
@@ -63,31 +98,6 @@ void decimal_to_snafu(long input, char *output) {
      100 -> 100/5 = 20 > 9 == true, add 0, divide again 20/5 => 4 < 0 == true,
      map(4) + 0 + 0 > 1-00 (125-25)
    */
-  input = 100;
-  sprintf(output, "%ld", input);
-}
-
-void decimal_to_snafu_map(int n, char *output) {
-  switch (n) {
-  case '0':
-    strcpy(output, "0");
-  case '1':
-    strcpy(output, "1");
-  case '2':
-    strcpy(output, "2");
-  case '3':
-    strcpy(output, "1=");
-  case '4':
-    strcpy(output, "1-");
-  case '5':
-    strcpy(output, "10");
-  case '6':
-    strcpy(output, "11");
-  case '7':
-    strcpy(output, "12");
-  case '8':
-    strcpy(output, "2=");
-  case '9':
-    strcpy(output, "2-");
-  }
+  decimal_to_snafu_map(input, output);
+  // sprintf(output, "%ld", input);
 }

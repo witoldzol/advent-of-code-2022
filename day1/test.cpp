@@ -14,18 +14,18 @@
 /* Tests are functions that return void, and take a single void*
  * parameter.  We'll get to what that parameter is later. */
 static MunitResult
-test_compare(const MunitParameter params[], void* data) {
+test_decimal_to_snafu(const MunitParameter params[], void* data) {
 
   /* These are just to silence compiler warnings about the parameters
    * being unused. */
   (void) params;
   (void) data;
-
   char output[255];
+
   long n = 1;
   decimal_to_snafu(n, output);
   printf("outpout is : %s\n", output);
-  munit_assert_true(!strcmp(output, "100")); //strcmp returns 0 if equal, so negate it
+  munit_assert_true(!strcmp(output, "1")); //strcmp returns 0 if equal, so negate it
 
   return MUNIT_OK;
 }
@@ -40,7 +40,7 @@ static MunitTest test_suite_tests[] = {
     (char*) "",
     /* You probably won't be surprised to learn that the tests are
      * functions. */
-    test_compare,
+    test_decimal_to_snafu,
     /* If you want, you can supply a function to set up a fixture.  If
      * you supply NULL, the user_data parameter from munit_suite_main
      * will be used directly.  If, however, you provide a callback

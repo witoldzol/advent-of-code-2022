@@ -20,13 +20,23 @@ test_decimal_to_snafu(const MunitParameter params[], void* data) {
    * being unused. */
   (void) params;
   (void) data;
-  char output[255];
 
-  long n = 1;
-  decimal_to_snafu(n, output);
+  char output[255];
+  decimal_to_snafu(1, output);
   printf("outpout is : %s\n", output);
   munit_assert_true(!strcmp(output, "1")); //strcmp returns 0 if equal, so negate it
 
+  decimal_to_snafu(9, output);
+  printf("outpout is : %s\n", output);
+  munit_assert_true(!strcmp(output, "2-")); //strcmp returns 0 if equal, so negate it
+
+  decimal_to_snafu(10, output);
+  printf("outpout is : %s\n", output);
+  munit_assert_true(!strcmp(output, "20")); //strcmp returns 0 if equal, so negate it
+
+  decimal_to_snafu(11, output);
+  printf("outpout is : %s\n", output);
+  munit_assert_true(!strcmp(output, "21")); //strcmp returns 0 if equal, so negate it
   return MUNIT_OK;
 }
 

@@ -69,35 +69,29 @@ void decimal_to_snafu_map(int n, char *output) {
   case 9:
     strcpy(output, "2-");
     break;
+  default:
+    strcpy(output, "error");
   }
-  printf("output in mapper  is %s\n", output);
 }
 void decimal_to_snafu(long input, char *output) {
-  // char foo[] = "wow";
-  // strcpy(output, foo);
-  /*
-     0 -> 0
-     1 -> 1
-     2 -> 2
-     3 -> 1=
-     4 -> 1-
-     5 -> 10
-     6 -> 11
-     7 -> 12
-     8 -> 2=
-     9 -> 2-
-   */
-  /*
-     if x followed by 0, divide x by 5, if division higher than 2, move over?
-     10 -> 10 /5 -> 20
-     11 -> 11 /5 -> 2 + map(1)
-     12 -> 22 2 + map(2)
-     13 ->  2 + map(3 ?)
-     20 -> 20/5 = 4 (less than 10 ? map(4)) + 0 => 40
-     30 -> 30/5 = 6 => 110
-     100 -> 100/5 = 20 > 9 == true, add 0, divide again 20/5 => 4 < 0 == true,
-     map(4) + 0 + 0 > 1-00 (125-25)
-   */
+ /*
+  11  dec
+  mod 10
+  1
+  10(modded 1)
+  21 snafu
+  */
+  int zero_count = 0;
+  while(input > 9){
+    input = input % 10;
+    if(input == 0){
+      input = 2;
+    }
+    zero_count++;
+  }
   decimal_to_snafu_map(input, output);
-  // sprintf(output, "%ld", input);
+  while(zero_count>0){
+    strcat(output, "0");
+    zero_count--;
+  }
 }

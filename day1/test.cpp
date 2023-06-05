@@ -22,13 +22,13 @@ test_decimal_to_snafu(const MunitParameter params[], void* data) {
   (void) data;
 
   char output[255];
-  // decimal_to_snafu(1, output);
-  // printf("outpout is : %s\n", output);
-  // munit_assert_true(!strcmp(output, "1")); //strcmp returns 0 if equal, so negate it
+  decimal_to_snafu(1, output);
+  printf("outpout is : %s\n", output);
+  munit_assert_true(!strcmp(output, "1")); //strcmp returns 0 if equal, so negate it
 
-  // decimal_to_snafu(9, output);
-  // printf("outpout is : %s\n", output);
-  // munit_assert_true(!strcmp(output, "2-")); //strcmp returns 0 if equal, so negate it
+  decimal_to_snafu(9, output);
+  printf("outpout is : %s\n", output);
+  munit_assert_true(!strcmp(output, "2-")); //strcmp returns 0 if equal, so negate it
 
   // decimal_to_snafu(10, output);
   // printf("outpout is : %s\n", output);
@@ -86,8 +86,8 @@ static MunitTest test_suite_tests[] = {
     MUNIT_TEST_OPTION_NONE,
     NULL
   },
-  { NULL, test_lower_bound, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
-  { (char*) "get_lower_bound", NULL, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL }
+  { (char*) "get_lower_bound", test_lower_bound, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
+  { NULL, NULL, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL }
 };
 
 /* Now we'll actually declare the test suite.  You could do this in

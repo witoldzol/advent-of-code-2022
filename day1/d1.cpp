@@ -44,15 +44,15 @@ long snafu_to_int(char *s) {
   return result;
 }
 
-int get_lower_bound(int max_power, long input){
+int get_lower_bound(int max_power, long input) {
+  int total = 0;
   if (max_power > 0) {
-    long total = 0;
-    for (int i = 0; i < max_power - 1; i++) {
-      total += pow(5, i) * 2;
+    for (int i = 0; i < max_power; i++) {
+      total += 2 * pow(5, i);
     }
-    if(total >= input){
-      //we can fit our input into lower bound
-      return max_power--;
+    if (total >= input) {
+      printf("INFO - We can fit into the lower bound, returning max -1");
+      return --max_power;
     }
   }
   return max_power;
@@ -117,6 +117,5 @@ void decimal_to_snafu(long input, char *output) {
   // and thats the max power of 5 that can fit this input
   int max_power = ceil(log_a_to_base_b(input, 5));
   // test lower bound
-  max_power=get_lower_bound(max_power, input);
-
+  max_power = get_lower_bound(max_power, input);
 }

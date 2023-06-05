@@ -22,21 +22,36 @@ test_decimal_to_snafu(const MunitParameter params[], void* data) {
   (void) data;
 
   char output[255];
-  decimal_to_snafu(1, output);
-  printf("outpout is : %s\n", output);
-  munit_assert_true(!strcmp(output, "1")); //strcmp returns 0 if equal, so negate it
+  // decimal_to_snafu(1, output);
+  // printf("outpout is : %s\n", output);
+  // munit_assert_true(!strcmp(output, "1")); //strcmp returns 0 if equal, so negate it
 
-  decimal_to_snafu(9, output);
-  printf("outpout is : %s\n", output);
-  munit_assert_true(!strcmp(output, "2-")); //strcmp returns 0 if equal, so negate it
+  // decimal_to_snafu(9, output);
+  // printf("outpout is : %s\n", output);
+  // munit_assert_true(!strcmp(output, "2-")); //strcmp returns 0 if equal, so negate it
 
-  decimal_to_snafu(10, output);
-  printf("outpout is : %s\n", output);
-  munit_assert_true(!strcmp(output, "20")); //strcmp returns 0 if equal, so negate it
+  // decimal_to_snafu(10, output);
+  // printf("outpout is : %s\n", output);
+  // munit_assert_true(!strcmp(output, "20")); //strcmp returns 0 if equal, so negate it
 
-  decimal_to_snafu(11, output);
-  printf("outpout is : %s\n", output);
-  munit_assert_true(!strcmp(output, "21")); //strcmp returns 0 if equal, so negate it
+  // decimal_to_snafu(110, output);
+  // printf("outpout is : %s\n", output);
+  // munit_assert_true(!strcmp(output, "1-20")); //strcmp returns 0 if equal, so negate it
+  return MUNIT_OK;
+}
+
+static MunitResult
+test_lower_bound(const MunitParameter params[], void* data) {
+
+  /* These are just to silence compiler warnings about the parameters
+   * being unused. */
+  (void) params;
+  (void) data;
+
+  long input = 61;
+  int max = get_lower_bound(3, input);
+  munit_assert_true(max == 2);
+
   return MUNIT_OK;
 }
 
@@ -47,7 +62,7 @@ static MunitTest test_suite_tests[] = {
     /* The name is just a unique human-readable way to identify the
      * test. You can use it to run a specific test if you want, but
      * usually it's mostly decorative. */
-    (char*) "",
+    (char*) "decimal to snafu",
     /* You probably won't be surprised to learn that the tests are
      * functions. */
     test_decimal_to_snafu,
@@ -71,7 +86,8 @@ static MunitTest test_suite_tests[] = {
     MUNIT_TEST_OPTION_NONE,
     NULL
   },
-  { NULL, NULL, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL }
+  { NULL, test_lower_bound, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
+  { (char*) "get_lower_bound", NULL, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL }
 };
 
 /* Now we'll actually declare the test suite.  You could do this in

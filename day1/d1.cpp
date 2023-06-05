@@ -1,8 +1,14 @@
+#include <cmath>
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
 
-int snafu_map(char n) {
+void decimal_to_snafu_map(int n, char *output);
+int get_lower_bound(int max_power, long input);
+
+int log_a_to_base_b(int a, int b) { return log2(a) / log2(b); };
+
+int snafu_to_decimal_map(char n) {
   switch (n) {
   case '2':
     return 2;
@@ -19,13 +25,15 @@ int snafu_map(char n) {
 }
 
 long snafu_to_int(char *s) {
-  int size = strlen(s) - 1; // strlen counts \n, so we remove it from calc
+  int size = strlen(s) - 1; // fget stores newline in a string, which strlen
+                            // counts, so we remove it from calc
   long double result = 0;
   double snafu_at_position_i;
+  // traverse from right to left, calculate power position based on y index
   for (int i = size, y = 0; i > 0; i--, y++) {
     double base_value = pow(5, y);
     char snafu_char = s[i - 1];
-    int snafu_int = snafu_map(snafu_char);
+    int snafu_int = snafu_to_decimal_map(snafu_char);
     snafu_at_position_i = base_value * snafu_int;
     result += snafu_at_position_i;
   }
@@ -34,6 +42,20 @@ long snafu_to_int(char *s) {
   printf("snafu value is : %Lf\n", result);
   printf("=====================\n");
   return result;
+}
+
+int get_lower_bound(int max_power, long input){
+  if (max_power > 0) {
+    long total = 0;
+    for (int i = 0; i < max_power - 1; i++) {
+      total += pow(5, i) * 2;
+    }
+    if(total >= input){
+      //we can fit our input into lower bound
+      return max_power--;
+    }
+  }
+  return max_power;
 }
 
 void decimal_to_snafu_map(int n, char *output) {
@@ -73,25 +95,28 @@ void decimal_to_snafu_map(int n, char *output) {
     strcpy(output, "error");
   }
 }
+
 void decimal_to_snafu(long input, char *output) {
- /*
-  11  dec
-  mod 10
-  1
-  10(modded 1)
-  21 snafu
+  /*
+  example : 61
+  max pow(5,0)? 2 fits  61 ? no
+  max pow(5,1) * 2 + pow(5,0) * 2 fits 61 ? no
+  max pow(5,2) 2 + pow(5,1) * 2 + pow(5,0) * 2 fits 61 ? yes
   */
-  int zero_count = 0;
-  while(input > 9){
-    input = input % 10;
-    if(input == 0){
-      input = 2;
-    }
-    zero_count++;
+
+  char temp[sizeof(output)];
+  decimal_to_snafu_map(input, temp);
+  if (strcmp(temp, "error")) { // strcmp returns 0 if equal, which is false in
+                               // if statement
+    printf("temp is :%s\n", temp);
+    strcpy(output, temp);
+    return;
   }
-  decimal_to_snafu_map(input, output);
-  while(zero_count>0){
-    strcat(output, "0");
-    zero_count--;
-  }
+
+  // log base 5 of input, get ceiling of that number,
+  // and thats the max power of 5 that can fit this input
+  int max_power = ceil(log_a_to_base_b(input, 5));
+  // test lower bound
+  max_power=get_lower_bound(max_power, input);
+
 }

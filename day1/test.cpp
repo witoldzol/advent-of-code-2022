@@ -49,8 +49,8 @@ test_lower_bound(const MunitParameter params[], void* data) {
   (void) data;
 
   long input = 61;
-  int max = get_lower_bound(3, input);
-  munit_assert_true(max == 2);
+  bool result = is_lower_bound_available(3, input);
+  munit_assert_true(result);
 
   return MUNIT_OK;
 }

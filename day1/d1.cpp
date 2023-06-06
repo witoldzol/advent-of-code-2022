@@ -4,7 +4,7 @@
 #include <string.h>
 
 void decimal_to_snafu_map(int n, char *output);
-int get_lower_bound(int max_power, long input);
+bool is_lower_bound_available(int max_power, long input);
 
 int log_a_to_base_b(int a, int b) { return log2(a) / log2(b); };
 
@@ -44,18 +44,20 @@ long snafu_to_int(char *s) {
   return result;
 }
 
-int get_lower_bound(int max_power, long input) {
+// 1 is true
+bool is_lower_bound_available(int max_power, long input) {
   int total = 0;
   if (max_power > 0) {
     for (int i = 0; i < max_power; i++) {
-      total += 2 * pow(5, i);
+      total += 2 * pow(5, i); // 2 is max digit in snafu range
     }
     if (total >= input) {
-      printf("INFO - We can fit into the lower bound, returning max -1");
-      return --max_power;
+      printf("INFO - We can fit into the lower bound, we can lower max power "
+             "by one\n");
+      return true;
     }
   }
-  return max_power;
+  return false;
 }
 
 void decimal_to_snafu_map(int n, char *output) {
@@ -106,9 +108,10 @@ void decimal_to_snafu(long input, char *output) {
 
   char temp[sizeof(output)];
   decimal_to_snafu_map(input, temp);
-  if (strcmp(temp, "error")) { // strcmp returns 0 if equal, which is false in
-                               // if statement
-    printf("temp is :%s\n", temp);
+  // strcmp returns 0 if equal, which is false in if statement
+  // quick check if we can map input, if error continue with more complex cal
+  if (strcmp(temp, "error")) {
+    printf("Input mapped to snafu, snafu result is : '%s'\n", temp);
     strcpy(output, temp);
     return;
   }
@@ -116,6 +119,34 @@ void decimal_to_snafu(long input, char *output) {
   // log base 5 of input, get ceiling of that number,
   // and thats the max power of 5 that can fit this input
   int max_power = ceil(log_a_to_base_b(input, 5));
-  // test lower bound
-  max_power = get_lower_bound(max_power, input);
+  // test if we can fit input into lower bound
+  if (is_lower_bound_available(max_power, input)) {
+    max_power--;
+  }
+  for (int i = max_power; i >= 0; i++) {
+    // 59
+    char snafu_result[255];
+    // 50
+    long max = 2 * (pow(5, i));
+    printf("[INFO] Max value for power %d is equal = %ld", i, max);
+    int multiples = input / 5;
+    printf("[INFO] Input multiples of 5 is %d", multiples);
+    if (multiples < 1) {
+      printf("[INFO] Multiples below one, skipping loop, index i = %i", i);
+      continue;
+    }
+    char snafu_temp[3];
+    decimal_to_snafu_map(multiples, snafu_temp);
+    strcat(snafu_result, snafu_temp);
+    printf("[INFO] snafu_result = %s at iteration %d", snafu_result, i);
+
+    input = max - input;
+    printf("[INFO] Reminder after max (%ld)- input (%ld) is = %ld", max, input,
+           input);
+
+    if (input == 0) {
+      strcpy(output, snafu_result);
+      break;
+    }
+  }
 }

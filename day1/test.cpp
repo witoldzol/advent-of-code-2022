@@ -30,9 +30,9 @@ test_decimal_to_snafu(const MunitParameter params[], void* data) {
   printf("outpout is : %s\n", output);
   munit_assert_true(!strcmp(output, "2-")); //strcmp returns 0 if equal, so negate it
 
-  // decimal_to_snafu(10, output);
-  // printf("outpout is : %s\n", output);
-  // munit_assert_true(!strcmp(output, "20")); //strcmp returns 0 if equal, so negate it
+  decimal_to_snafu(10, output);
+  printf("outpout is : %s\n", output);
+  munit_assert_true(!strcmp(output, "20")); //strcmp returns 0 if equal, so negate it
 
   // decimal_to_snafu(110, output);
   // printf("outpout is : %s\n", output);
@@ -42,14 +42,14 @@ test_decimal_to_snafu(const MunitParameter params[], void* data) {
 
 static MunitResult
 test_lower_bound(const MunitParameter params[], void* data) {
-
-  /* These are just to silence compiler warnings about the parameters
-   * being unused. */
-  (void) params;
-  (void) data;
-
-  long input = 61;
+  long long input = 61;
   bool result = is_lower_bound_available(3, input);
+  munit_assert_true(result);
+
+  input = 10;
+  int power = max_power(input);
+  munit_assert_true(power==2);
+  result = is_lower_bound_available(power, input);
   munit_assert_true(result);
 
   return MUNIT_OK;

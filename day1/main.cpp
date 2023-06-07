@@ -16,10 +16,11 @@ int main() {
     snafu_total += snafu_to_int(buffer);
   }
   char result_as_snafu[100];
+  snafu_total = 10;
   decimal_to_snafu(snafu_total, result_as_snafu);
   fclose(fp);
   printf("result is %ld\n", snafu_total);
-  printf("expected : %ld\n", 32005641587247);
+  // printf("expected : %ld\n", 32005641587247);
   printf("snafu total : %s\n", result_as_snafu);
 }
 

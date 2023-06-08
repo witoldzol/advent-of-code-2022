@@ -46,6 +46,18 @@ test_decimal_to_snafu(const MunitParameter params[], void* data) {
   printf("outpout is : %s\n", output);
   munit_assert_true(!strcmp(output, "1==")); //strcmp returns 0 if equal, so negate it
 
+  decimal_to_snafu(15, output);
+  printf("outpout is : %s\n", output);
+  munit_assert_true(!strcmp(output, "1=0")); //strcmp returns 0 if equal, so negate it
+
+  decimal_to_snafu(20, output);
+  printf("outpout is : %s\n", output);
+  munit_assert_true(!strcmp(output, "1-0")); //strcmp returns 0 if equal, so negate it
+
+  decimal_to_snafu(2022, output);
+  printf("outpout is : %s\n", output);
+  munit_assert_true(!strcmp(output, "1=11-2")); //strcmp returns 0 if equal, so negate it
+
   return MUNIT_OK;
 }
 

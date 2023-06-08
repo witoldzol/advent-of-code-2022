@@ -183,6 +183,7 @@ void decimal_to_snafu(long long input, char *output) {
     strcpy(output, snafu_temp);
   } else {
     long long reminder = input;
+      // todo - we should check this after each pass
     printf("[INFO] Lower bound NOT available for input %lld. Power == %d\n",
            reminder, power);
     char snafu_temp[100] = {'0'};
@@ -207,6 +208,19 @@ void decimal_to_snafu(long long input, char *output) {
       // index layout 25 5 1
       // 13/25  => 0.5
       // we set times = 1
+      //
+      //
+      // 1=11-2 
+      // 3125 - 2 * 625 + 125  + 25 - 5 + 2
+      // 
+      // 2022
+      // power = 5
+      // 1 5 25 125 625 3125
+      // i=0, times 2022/3125 -> take 1
+      // reminder 2022 - 3125  = -1103
+      // -1103 / 625 -> times -1.9
+      // 
+      //
       if ((times < 3 && times >= 1) || (times > -3 && times <= -1)) {
         char temp[2];
         decimal_to_snafu_map((int)times, temp);
@@ -214,14 +228,6 @@ void decimal_to_snafu(long long input, char *output) {
           printf("[ERROR] Invalid number passed to snafu map, %d\n", (int)times);
 	  exit(1);
         }
-	// we won't need this , leaving just in case for now - todo remove
-        // if (strlen(temp) > 1) {
-        //   printf("Iteration %d, max power = %d, input = %lld\n.", i, power,
-        //          reminder);
-        //   printf("[ERROR] snafu number after mapping cannot be longer than 1 "
-        //          "char, exiting with 1\n");
-        //   exit(1);
-        // }
         snafu_temp[i] = *temp;
         printf("[INFO] After allocating snafu is == `%s`\n", snafu_temp);
 	printf("[INFO] reminder before new calc is %lld\n", reminder);
@@ -238,7 +244,7 @@ void decimal_to_snafu(long long input, char *output) {
         }
         // HANDLE times < 1
       } else {
-        times = 1;
+        times = 1; // pass 1 & move to next iteration where w handle negative reminder
         char temp[2];
         decimal_to_snafu_map(times, temp);
         // times is below 0, so we take one & handle negatives

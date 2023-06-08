@@ -133,75 +133,59 @@ void decimal_to_snafu(long long input, char *output) {
   int power = max_power(input);
   // test if we can fit input into lower bound
   if (is_lower_bound_available(power, input)) {
+    printf("[INFO] Lower bound available for input %lld\n", input);
     power--;
-  }
-
-  // 10, power = 2
-  //  0,1
-  char snafu_temp[100] = {0};
-  for (int i = 0; i <= power; i++) {
-    // how many 5s can we fit into this bit?
-    long times = input / pow(5, power - i);
-    if (times > 2) {
-      printf("Iteration %d, max power = %d, input = %lld\n.", i, power, input);
-      printf("Exiting because we got 'times' value higher than 2, which is "
-             "illegal in snafu system");
-      exit(1);
-    }
-    printf("[INFO] times = %ld, index = %d\n", times, i);
-    if (times == 2 || times == 1) {
-      char temp[2];
-      sprintf(temp, "%ld", times);
-      snafu_temp[i] = *temp;
-      printf("[INFO] After allocating snafu is == %s\n", snafu_temp);
-      long long reminder = input - (2 * pow(5, power - i));
-      if (reminder) {
-        input = reminder;
-        continue;
-      } else {
-        for (int j = i + 1; j <= power; j++) {
-          snafu_temp[j] = '0';
-        }
-        break;
+    char snafu_temp[100] = {'0'};
+    for (int i = 0; i <= power; i++) {
+      // how many 5s can we fit into this bit?
+      int times = input / pow(5, power - i);
+      if (times > 2) {
+        printf("Iteration %d, max power = %d, input = %lld\n.", i, power,
+               input);
+        printf("Exiting because we got 'times' value higher than 2, which is "
+               "illegal in snafu system");
+        exit(1);
       }
-      // most likely, input is lower than current max value for given index ie.
-      // pow(5,power-i)
-    } else {
+      printf("[INFO] times = %d, index = %d\n", times, i);
+      if (times == 2 || times == 1) {
+        char temp[2];
+        sprintf(temp, "%d", times);
+        snafu_temp[i] = *temp;
+        printf("[INFO] After allocating snafu is == %s\n", snafu_temp);
+        long long reminder = input - (2 * pow(5, power - i));
+        if (reminder) {
+          input = reminder;
+          continue;
+        } else {
+          for (int j = i + 1; j <= power; j++) {
+            snafu_temp[j] = '0';
+          }
+          break;
+        }
+        // most likely, input is lower than current max value for given index
+        // ie. pow(5,power-i)
+      } else {
 
-      snafu_temp[i] = '0';
+        snafu_temp[i] = '0';
+      }
+      snafu_temp[power + 1] = '\0';
+      // tie off the result
     }
-    // tie off the result
+    printf("after cal snafu is %s for input %lld\n", snafu_temp, input);
+    strcpy(output, snafu_temp);
+  } else {
+    printf("[INFO] Lower bound NOT available for input %lld\n", input);
+    char snafu_temp[100] = {'0'};
+    for (int i = 0; i <= power; i++) {
+      int times = input / 5;
+      if (times > 2) {
+        printf("Iteration %d, max power = %d, input = %lld\n.", i, power,
+               input);
+        printf("Exiting because we got 'times' value higher than 2, which is "
+               "illegal in snafu system");
+        exit(1);
+      }
+      printf("[INFO] times = %d, index = %d\n", times, i);
+    }
   }
-  snafu_temp[power + 1] = '\0';
-
-  printf("after cal snafu is %s for input %lld\n", snafu_temp, input);
-  strcpy(output, snafu_temp);
-
-  // for (int i = max_power; i >= 0; i++) {
-  //   // 59
-  //   char snafu_result[255];
-  //   // 50
-  //   long max = 2 * (pow(5, i));
-  //   printf("[INFO] Max value for power %d is equal = %ld", i, max);
-  //   int multiples = input / 5;
-  //   printf("[INFO] Input multiples of 5 is %d", multiples);
-  //   if (multiples < 1) {
-  //     printf("[INFO] Multiples below one, skipping loop, index i = %i", i);
-  //     continue;
-  //   }
-  //   char snafu_temp[3];
-  //   decimal_to_snafu_map(multiples, snafu_temp);
-  //   strcat(snafu_result, snafu_temp);
-  //   printf("[INFO] snafu_result = %s at iteration %d", snafu_result, i);
-
-  //   input = max - input;
-  //   printf("[INFO] Reminder after max (%ld)- input (%ld) is = %ld", max,
-  //   input,
-  //          input);
-
-  //   if (input == 0) {
-  //     strcpy(output, snafu_result);
-  //     break;
-  //   }
-  // }
 }

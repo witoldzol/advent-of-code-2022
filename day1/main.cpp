@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-
 int main() {
   FILE *fp;
   int bufferLength = 50;
@@ -23,4 +22,3 @@ int main() {
   // printf("expected : %ld\n", 32005641587247);
   printf("snafu total : %s\n", result_as_snafu);
 }
-

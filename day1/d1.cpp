@@ -157,7 +157,6 @@ void run_highbound(long long input, int power, char *output) {
       }
       snafu_temp[i] = temp;
       snafu_temp[i+1] = '\0';
-      printf("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ added ending \n");
       printf("[INFO] After allocating snafu is == `%s`\n", snafu_temp);
       printf("[INFO] reminder before new calc is %lld\n", reminder);
       printf("current times = %f\n", times);
@@ -179,7 +178,6 @@ void run_highbound(long long input, int power, char *output) {
       // times is below 0, so we take one & handle negatives
       snafu_temp[i] = temp;
       snafu_temp[i+1] = '\0';
-      printf("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ added ending \n");
       printf("[INFO] After allocating snafu is == `%s`\n", snafu_temp);
       reminder = reminder - (times * pow(5, power - i));
       if (reminder) {
@@ -193,7 +191,6 @@ void run_highbound(long long input, int power, char *output) {
       }
     }
     printf("[INFO] End of calculation, ending string with NULL. Iteration : %d, current snafu_temp = %s", i, snafu_temp);
-    snafu_temp[power + 1] = '\0';
   }
   printf("after cal snafu is %s for input %lld\n", snafu_temp, input);
   strcpy(output, snafu_temp);
@@ -227,6 +224,7 @@ void run_lowerbound(long long input, int power, char *output) {
     if (times == 2 || times == 1 || times == -1 || times == -2) {
       char t = decimal_to_snafu_map((int) times);
       snafu_temp[i] = t;
+      snafu_temp[i+1] = '\0';
       printf("[INFO] After allocating snafu is == %s\n", snafu_temp);
       reminder = input - (times * pow(5, power - i));
       printf("[INFO] Reminder is == %lld\n", reminder);
@@ -245,7 +243,6 @@ void run_lowerbound(long long input, int power, char *output) {
       snafu_temp[i] = '0';
     }
     // tie off the result
-    snafu_temp[power + 1] = '\0';
   }
   printf("[INFO] *** Final SNAFU number is ==> %s for input %lld ***\n", snafu_temp, input);
   strcpy(output, snafu_temp);

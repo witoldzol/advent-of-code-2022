@@ -6,6 +6,7 @@
 
 bool is_lower_bound_available(int max_power, long input);
 void fill_reminder_of_array_with_zeros(char *arr, int start, int end);
+void get_snafu_char(char *snafu_temp, float times, int i);
 
 void fill_reminder_of_array_with_zeros(char *arr, int start, int end) {
   int j = start + 1;
@@ -112,6 +113,28 @@ int max_power(long long input) {
   return ceil(log_a_to_base_b(input, 5));
 }
 
+void get_snafu_char(char *snafu_temp, float times, int i) {
+  char temp = decimal_to_snafu_map(times);
+  if (temp == 'e') {
+    printf("[ERROR] Invalid number passed to snafu map, %f\n", times);
+    exit(1);
+  }
+  snafu_temp[i] = temp;
+  snafu_temp[i + 1] = '\0';
+  printf("[INFO] After pushing new number, temporary snafu is == `%s`\n",
+         snafu_temp);
+}
+
+void exit_if_over_two(float times) {
+  if (times > 2) {
+    printf("[ERROR] Exiting because we got 'times' == %d value higher than "
+           "2, which is "
+           "illegal in snafu system",
+           (int)times);
+    exit(1);
+  }
+}
+
 void run_highbound(long long input, int power, char *output) {
   long long reminder = input;
   char snafu_temp[100];
@@ -125,67 +148,21 @@ void run_highbound(long long input, int power, char *output) {
     times = round_to_closest_int(times);
     printf("[INFO] Times after rounding= %.1f, index = %d\n", times, i);
     exit_if_over_two(times);
-    // todo = we can put her if (times == 0 ) and get rid of this logic
-    if ((times < 3 && times >= 1) || (times > -3 && times < 0)) {
-      char temp = decimal_to_snafu_map(times);
-      if (temp == 'e') {
-        printf("[ERROR] Invalid number passed to snafu map, %f\n", times);
-        exit(1);
-      }
-      snafu_temp[i] = temp;
-      snafu_temp[i + 1] = '\0';
-      printf("[INFO] After pushing new number, temporary snafu is == `%s`\n",
-             snafu_temp);
-      reminder = reminder - (times * pow(5, power - i));
-      printf("[INFO] Reminder is %lld\n", reminder);
-      if (reminder) {
-        continue;
-      } else {
-        fill_reminder_of_array_with_zeros(snafu_temp, i, power);
-        break;
-      }
-    } else {
-      printf("[INFO] TIMES EQUALS ZERO CASE. Iteration == %d\n", i);
-      if (i == 0) { // if this is the very first numer, we use 1, don't ask me why
-        times = 1;
-      } else {
-        times = 0; // otherwise 0
-      }
-      char temp = decimal_to_snafu_map(times);
-      if (temp == 'e') {
-        printf("[ERROR] Invalid number passed to snafu map, %f\n", times);
-        exit(1);
-      }
-      snafu_temp[i] = temp;
-      snafu_temp[i + 1] = '\0';
-      printf("[INFO] After allocating snafu is == `%s`\n", snafu_temp);
-      reminder = reminder - (times * pow(5, power - i));
-      if (reminder) {
-        continue;
-      } else {
-        // no reminder, we can fill the rest of array with zeros
-        for (int j = i + 1; j <= power; j++) {
-          snafu_temp[j] = '0';
-        }
-        break;
-      }
+    if (times == 0) {
+      times = (i == 0) ? 1 : 0; // I have no idea why this works, or is the case!
     }
-    printf("[INFO] End of calculation, ending string with NULL. Iteration : "
-           "%d, current snafu_temp = %s",
-           i, snafu_temp);
+    get_snafu_char(snafu_temp, times, i);
+    reminder = reminder - (times * pow(5, power - i));
+    printf("[INFO] Reminder is %lld\n", reminder);
+    if (reminder) {
+      continue;
+    } else {
+      fill_reminder_of_array_with_zeros(snafu_temp, i, power);
+      break;
+    }
   }
-  printf("after cal snafu is %s for input %lld\n", snafu_temp, input);
+  printf("[INFO] End of iteration, snafu number is => %s for input %lld\n", snafu_temp, input);
   strcpy(output, snafu_temp);
-}
-
-void exit_if_over_two(float times) {
-  if (times > 2) {
-    printf("[ERROR] Exiting because we got 'times' == %d value higher than "
-           "2, which is "
-           "illegal in snafu system",
-           (int)times);
-    exit(1);
-  }
 }
 
 void run_lowerbound(long long input, int power, char *output) {

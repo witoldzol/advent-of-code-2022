@@ -101,8 +101,12 @@ char decimal_to_snafu_map(int n) {
 int max_power(long long input) {
   // log base 5 of input, get ceiling of that number,
   // and thats the max power of 5 that can fit this input
+  // example: input = 120, answer : power 3
+  // p=3 p=2 p=1 p=0
+  // 125 25  5   1
   return ceil(log_a_to_base_b(input, 5));
 }
+
 void run_highbound(long long input, int power, char *output) {
   long long reminder = input;
   // todo - we should check this after each pass

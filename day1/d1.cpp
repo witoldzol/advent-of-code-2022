@@ -45,14 +45,9 @@ long snafu_to_int(char *s) {
     snafu_at_position_i = base_value * snafu_int;
     result += snafu_at_position_i;
   }
-  printf("\n");
-  printf("string is : %s\n", s);
-  printf("snafu value is : %Lf\n", result);
-  printf("=====================\n");
   return result;
 }
 
-// 1 is true
 bool is_lower_bound_available(int max_power, long input) {
   printf("[INFO] Calculating if lower bound is possible, max power = %d, input "
          "= %ld\n",
@@ -60,7 +55,7 @@ bool is_lower_bound_available(int max_power, long input) {
   int total = 0;
   if (max_power > 0) {
     for (int i = 0; i < max_power; i++) {
-      total += 2 * pow(5, i); // 2 is max digit in snafu range
+      total += pow(5, i) * 2; // 2 is max digit in snafu range
     }
     printf("[INFO] Max total = %d, input = %ld, abs() input = %ld\n", total,
            input, abs(input));
@@ -90,27 +85,6 @@ void decimal_to_snafu_map(int n, char *output) {
     break;
   case 2:
     strcpy(output, "2");
-    break;
-  case 3:
-    strcpy(output, "1=");
-    break;
-  case 4:
-    strcpy(output, "1-");
-    break;
-  case 5:
-    strcpy(output, "10");
-    break;
-  case 6:
-    strcpy(output, "11");
-    break;
-  case 7:
-    strcpy(output, "12");
-    break;
-  case 8:
-    strcpy(output, "2=");
-    break;
-  case 9:
-    strcpy(output, "2-");
     break;
   default:
     printf("[ERROR] Invalid input to snafu map == %d\n", n);
@@ -241,26 +215,43 @@ void run_highbound(long long input, int power, char *output) {
 }
 
 void run_lowerbound(long long input, int power, char *output) {
-  printf("[INFO] Lower bound available for input %lld\n", input);
   power--;
+  printf("[INFO] Lower bound available for input %lld, power = %d \n", input, power);
   long long reminder;
-  char snafu_temp[100] = {'0'};
+  char snafu_temp[100] = {0};
   for (int i = 0; i <= power; i++) {
     // how many 5s can we fit into this bit?
-    int times = input / pow(5, power - i);
-    if (times > 2) {
-      printf("Iteration %d, max power = %d, input = %lld\n.", i, power, input);
-      printf("Exiting because we got 'times' value higher than 2, which is "
-             "illegal in snafu system");
+    float times = input / pow(5, power - i);
+    printf("[INFO] How many 5s can we fit ?\n");
+    printf("[INFO] pow(5, power (%d) - index (%d)? ==> %f \n", power, i, times);
+
+        if (times < 2.0 && times > 1.5) {
+          times = ceil(times);
+          printf("[INFO] -3- times is now => %f\n", times);
+        } else {
+          times = floor(times);
+          printf("[INFO] -4- times is now => %f\n", times);
+        }
+    if (((int)times) > 2) {
+      printf("[INFO] Iteration %d, max power = %d, input = %lld\n.", i, power, input);
+      printf("[ERROR] Exiting because we got 'times' == %d value higher than 2, which is "
+             "illegal in snafu system", (int) times);
       exit(1);
     }
-    printf("[INFO] times = %d, index = %d\n", times, i);
-    if (times == 2 || times == 1) {
-      char temp[2];
-      sprintf(temp, "%d", times);
+    printf("[INFO] times = %f, index = %d\n", times, i);
+    if (times == 2 || times == 1 || times == -1 || times == -2) {
+      char temp[1];
+      decimal_to_snafu_map((int) times, temp);
+      printf("[INFO] Temp is = %s, *temp = %c, snafu_temp[i] = %c, index = %d, snafu_temp = %s\n", temp, *temp, snafu_temp[i], i, snafu_temp);
       snafu_temp[i] = *temp;
+      for(int i = 0; i<3; i++){
+	printf("----------\n");
+	printf("%c\n", snafu_temp[i]);
+	printf("----------\n");
+      }
       printf("[INFO] After allocating snafu is == %s\n", snafu_temp);
       reminder = input - (times * pow(5, power - i));
+      printf("[INFO] Reminder is == %lld\n", reminder);
       if (reminder) {
         input = reminder;
         continue;
@@ -278,10 +269,31 @@ void run_lowerbound(long long input, int power, char *output) {
     // tie off the result
     snafu_temp[power + 1] = '\0';
   }
-  printf("after cal snafu is %s for input %lld\n", snafu_temp, input);
+  printf("[INFO] *** Final SNAFU number is ==> %s for input %lld ***\n", snafu_temp, input);
   strcpy(output, snafu_temp);
 }
-
+/*
+ 
+      if (!strcmp(temp, "error")) {
+        printf("[ERROR] Invalid number passed to snafu map, %d\n", (int)times);
+        exit(1);
+      }
+      snafu_temp[i] = *temp;
+      printf("[INFO] After allocating snafu is == `%s`\n", snafu_temp);
+      printf("[INFO] reminder before new calc is %lld\n", reminder);
+      printf("current times = %f\n", times);
+      reminder = reminder - (times * pow(5, power - i));
+      printf("[INFO] reminder after new calc is %lld\n", reminder);
+      if (reminder) {
+        continue;
+      } else {
+        // no reminder, we can fill the rest of array with zeros
+        for (int j = i + 1; j <= power; j++) {
+          snafu_temp[j] = '0';
+        }
+        break;
+      }
+ */
 void decimal_to_snafu(long long input, char *output) {
   /*
   example : 61
@@ -306,6 +318,7 @@ void decimal_to_snafu(long long input, char *output) {
   int power = max_power(input);
   // test if we can fit input into lower bound
   if (is_lower_bound_available(power, input)) {
+    printf("[INFO] Starting lower bound run \n");
     run_lowerbound(input, power, output);
   } else {
     run_highbound(input, power, output);

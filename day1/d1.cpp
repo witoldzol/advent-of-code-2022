@@ -172,6 +172,7 @@ void run_highbound(long long input, int power, char *output) {
         for (int j = i + 1; j <= power; j++) {
           snafu_temp[j] = '0';
         }
+	snafu_temp[i+2] = '\0';
         break;
       }
       // TIMES == 0

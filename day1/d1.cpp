@@ -136,23 +136,6 @@ void run_highbound(long long input, int power, char *output) {
       exit(1);
     }
     printf("[INFO] times = %f, index = %d\n", times, i);
-    // 3125 - 2 * 625 + 125  + 25 - 5 + 2
-    //
-    // 2022
-    // power = 5
-    // 1 5 25 125 625 3125
-    // i=0, times 2022/3125 < 0 --> take 1
-    // reminder 2022 - 3125  = -1103
-    // times floor -> - (2 * 125 ) = -250
-    // -1103 + 250 =
-    //
-    // result = 1-1111
-    // ???? calc if low bound possible (input = -1103, pow=4)
-    // (2 * 625) + (2 * 125) + (2 * 25) + (2 * 5) + (2 * 1)
-    // max = 1562, can fit 1103, take lower bound
-    // -1103 / 625 -> times -1.9
-    //
-    //
     if ((times < 3 && times >= 1) || (times > -3 && times < 0)) {
       printf("[INFO] -1- times is now => %f\n", times);
       if (times < 0) {
@@ -173,6 +156,8 @@ void run_highbound(long long input, int power, char *output) {
         exit(1);
       }
       snafu_temp[i] = temp;
+      snafu_temp[i+1] = '\0';
+      printf("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ added ending \n");
       printf("[INFO] After allocating snafu is == `%s`\n", snafu_temp);
       printf("[INFO] reminder before new calc is %lld\n", reminder);
       printf("current times = %f\n", times);
@@ -193,6 +178,8 @@ void run_highbound(long long input, int power, char *output) {
       char temp = decimal_to_snafu_map(times);
       // times is below 0, so we take one & handle negatives
       snafu_temp[i] = temp;
+      snafu_temp[i+1] = '\0';
+      printf("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ added ending \n");
       printf("[INFO] After allocating snafu is == `%s`\n", snafu_temp);
       reminder = reminder - (times * pow(5, power - i));
       if (reminder) {
@@ -205,6 +192,7 @@ void run_highbound(long long input, int power, char *output) {
         break;
       }
     }
+    printf("[INFO] End of calculation, ending string with NULL. Iteration : %d, current snafu_temp = %s", i, snafu_temp);
     snafu_temp[power + 1] = '\0';
   }
   printf("after cal snafu is %s for input %lld\n", snafu_temp, input);

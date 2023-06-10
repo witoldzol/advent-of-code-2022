@@ -76,13 +76,13 @@ test_decimal_to_snafu(const MunitParameter params[], void* data) {
 static MunitResult
 test_lower_bound(const MunitParameter params[], void* data) {
   long long input = 61;
-  bool result = is_lower_bound_available(3, input);
+  bool result = is_low_power_enough(3, input);
   munit_assert_true(result);
 
   input = 10;
   int power = max_power(input);
   munit_assert_true(power==2);
-  result = is_lower_bound_available(power, input);
+  result = is_low_power_enough(power, input);
   munit_assert_true(result);
 
   return MUNIT_OK;

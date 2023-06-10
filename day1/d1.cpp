@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 
-bool is_lower_bound_available(int max_power, long input);
+bool is_low_power_enough(int max_power, long input);
 void fill_reminder_of_array_with_zeros(char *arr, int start, int end);
 void get_snafu_char(char *snafu_temp, float times, int i);
 
@@ -62,7 +62,7 @@ long snafu_to_int(char *s) {
   return result;
 }
 
-bool is_lower_bound_available(int max_power, long input) {
+bool is_low_power_enough(int max_power, long input) {
   printf("[INFO] Calculating if lower bound is possible, max power = %d, input "
          "= %ld\n",
          max_power, input);
@@ -172,19 +172,19 @@ void decimal_to_snafu(long long input, char *output) {
   printf("START NEW RUN \n");
   printf("Input : %lld\n", input);
   printf("*****************************************************\n");
-  char temp = decimal_to_snafu_map(input);
   // strcmp returns 0 if equal, which is false in if statement
   // quick check if we can map input, if we get error, continue with more
   // complex cal
+  char temp = decimal_to_snafu_map(input);
   if (temp != 'e') {
     printf("Input mapped to snafu, snafu result is : '%c'\n", temp);
     strcpy(output, &temp);
-    output[1] = '\0'; // tie off, we compare to string in tests
+    output[1] = '\0'; // end string
     return;
   }
   int power = max_power(input);
   // test if we can fit input into lower bound
-  if (is_lower_bound_available(power, input)) {
+  if (is_low_power_enough(power, input)) {
     power--;
     printf(
         "[INFO] We can fit input [ %lld ], into expression with ( power - 1 )"

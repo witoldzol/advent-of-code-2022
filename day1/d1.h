@@ -3,7 +3,7 @@
 long snafu_to_int(char *s);
 void decimal_to_snafu(long long n, char *output);
 void decimal_to_snafu_map(int n, char *output);
-bool is_lower_bound_available(int max_power, long input);
+bool is_low_power_enough(int max_power, long input);
 int max_power(long long input);
 void run_lowerbound(long long input, int power, char *output);
 int round_to_closest_int(float n);

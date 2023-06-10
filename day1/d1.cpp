@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <string.h>
 
-void decimal_to_snafu_map(int n, char *output);
 bool is_lower_bound_available(int max_power, long input);
 
 float log_a_to_base_b(long long a, int b) {
@@ -68,27 +67,27 @@ bool is_lower_bound_available(int max_power, long input) {
   return false;
 }
 
-void decimal_to_snafu_map(int n, char *output) {
+char decimal_to_snafu_map(int n) {
   printf("[INFO] decimal passed to snafu map == %d\n", n);
   switch (n) {
   case -1:
-    strcpy(output, "-");
+    return '-';
     break;
   case -2:
-    strcpy(output, "=");
+    return '=';
     break;
   case 0:
-    strcpy(output, "0");
+    return '0';
     break;
   case 1:
-    strcpy(output, "1");
+    return '1';
     break;
   case 2:
-    strcpy(output, "2");
+    return '2';
     break;
   default:
     printf("[ERROR] Invalid input to snafu map == %d\n", n);
-    strcpy(output, "error");
+    return 'e';
   }
 }
 
@@ -102,7 +101,7 @@ void run_highbound(long long input, int power, char *output) {
   // todo - we should check this after each pass
   printf("[INFO] Lower bound NOT available for input %lld. Power == %d\n",
          reminder, power);
-  char snafu_temp[100] = {'0'};
+  char snafu_temp[100];
   for (int i = 0; i <= power; i++) {
     printf("===================\n");
     // if (is_lower_bound_available(power - i, reminder)) {
@@ -168,13 +167,12 @@ void run_highbound(long long input, int power, char *output) {
       }
       times = floor(times);
 
-      char temp[2];
-      decimal_to_snafu_map(times, temp);
-      if (!strcmp(temp, "error")) {
+      char temp = decimal_to_snafu_map(times);
+      if (temp == 'e') {
         printf("[ERROR] Invalid number passed to snafu map, %d\n", (int)times);
         exit(1);
       }
-      snafu_temp[i] = *temp;
+      snafu_temp[i] = temp;
       printf("[INFO] After allocating snafu is == `%s`\n", snafu_temp);
       printf("[INFO] reminder before new calc is %lld\n", reminder);
       printf("current times = %f\n", times);
@@ -192,10 +190,9 @@ void run_highbound(long long input, int power, char *output) {
     } else {
       times = 1; // pass 1 & move to next iteration where w handle negative
                  // reminder
-      char temp[2];
-      decimal_to_snafu_map(times, temp);
+      char temp = decimal_to_snafu_map(times);
       // times is below 0, so we take one & handle negatives
-      snafu_temp[i] = *temp;
+      snafu_temp[i] = temp;
       printf("[INFO] After allocating snafu is == `%s`\n", snafu_temp);
       reminder = reminder - (times * pow(5, power - i));
       if (reminder) {
@@ -240,15 +237,8 @@ void run_lowerbound(long long input, int power, char *output) {
     }
     printf("[INFO] times = %f, index = %d\n", times, i);
     if (times == 2 || times == 1 || times == -1 || times == -2) {
-      char temp[1];
-      decimal_to_snafu_map((int) times, temp);
-      printf("[INFO] Temp is = %s, *temp = %c, snafu_temp[i] = %c, index = %d, snafu_temp = %s\n", temp, *temp, snafu_temp[i], i, snafu_temp);
-      snafu_temp[i] = *temp;
-      for(int i = 0; i<3; i++){
-	printf("----------\n");
-	printf("%c\n", snafu_temp[i]);
-	printf("----------\n");
-      }
+      char t = decimal_to_snafu_map((int) times);
+      snafu_temp[i] = t;
       printf("[INFO] After allocating snafu is == %s\n", snafu_temp);
       reminder = input - (times * pow(5, power - i));
       printf("[INFO] Reminder is == %lld\n", reminder);
@@ -305,14 +295,14 @@ void decimal_to_snafu(long long input, char *output) {
   printf("START NEW RUN \n");
   printf("Input : %lld\n", input);
   printf("*****************************************************\n");
-  char temp[sizeof(output)];
-  decimal_to_snafu_map(input, temp);
+  char temp = decimal_to_snafu_map(input);
   // strcmp returns 0 if equal, which is false in if statement
   // quick check if we can map input, if we get error, continue with more
   // complex cal
-  if (strcmp(temp, "error")) {
-    printf("Input mapped to snafu, snafu result is : '%s'\n", temp);
-    strcpy(output, temp);
+  if (temp != 'e') {
+    printf("Input mapped to snafu, snafu result is : '%c'\n", temp);
+    strcpy(output, &temp);
+    output[1] = '\0'; // tie off, we compare to string in tests 
     return;
   }
   int power = max_power(input);

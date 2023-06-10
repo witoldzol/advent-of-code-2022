@@ -30,9 +30,9 @@ test_decimal_to_snafu(const MunitParameter params[], void* data) {
   printf("outpout is : %s\n", output);
   munit_assert_true(!strcmp(output, "2-")); //strcmp returns 0 if equal, so negate it
 
-  // decimal_to_snafu(10, output);
-  // printf("outpout is : %s\n", output);
-  // munit_assert_true(!strcmp(output, "20")); //strcmp returns 0 if equal, so negate it
+  decimal_to_snafu(10, output);
+  printf("outpout is : %s\n", output);
+  munit_assert_true(!strcmp(output, "20")); //strcmp returns 0 if equal, so negate it
 
   decimal_to_snafu(11, output);
   printf("outpout is : %s\n", output);

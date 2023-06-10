@@ -109,7 +109,6 @@ int max_power(long long input) {
 
 void run_highbound(long long input, int power, char *output) {
   long long reminder = input;
-  // todo - we should check this after each pass
   printf("[INFO] Lower bound NOT available for input %lld. Power == %d\n",
          reminder, power);
   char snafu_temp[100];
@@ -169,7 +168,6 @@ void run_highbound(long long input, int power, char *output) {
         times = 0;
       }
       char temp = decimal_to_snafu_map(times);
-      // times is below 0, so we take one & handle negatives
       snafu_temp[i] = temp;
       snafu_temp[i + 1] = '\0';
       printf("[INFO] After allocating snafu is == `%s`\n", snafu_temp);
@@ -231,46 +229,16 @@ void run_lowerbound(long long input, int power, char *output) {
         }
         break;
       }
-      // most likely, input is lower than current max value for given index
-      // ie. pow(5,power-i)
     } else {
       snafu_temp[i] = '0';
     }
-    // tie off the result
   }
   printf("[INFO] *** Final SNAFU number is ==> %s for input %lld ***\n",
          snafu_temp, input);
   strcpy(output, snafu_temp);
 }
-/*
 
-      if (!strcmp(temp, "error")) {
-        printf("[ERROR] Invalid number passed to snafu map, %d\n", (int)times);
-        exit(1);
-      }
-      snafu_temp[i] = *temp;
-      printf("[INFO] After allocating snafu is == `%s`\n", snafu_temp);
-      printf("[INFO] reminder before new calc is %lld\n", reminder);
-      printf("current times = %f\n", times);
-      reminder = reminder - (times * pow(5, power - i));
-      printf("[INFO] reminder after new calc is %lld\n", reminder);
-      if (reminder) {
-        continue;
-      } else {
-        // no reminder, we can fill the rest of array with zeros
-        for (int j = i + 1; j <= power; j++) {
-          snafu_temp[j] = '0';
-        }
-        break;
-      }
- */
 void decimal_to_snafu(long long input, char *output) {
-  /*
-  example : 61
-  max pow(5,0)? 2 fits  61 ? no
-  max pow(5,1) * 2 + pow(5,0) * 2 fits 61 ? no
-  max pow(5,2) 2 + pow(5,1) * 2 + pow(5,0) * 2 fits 61 ? yes
-  */
   printf("*****************************************************\n");
   printf("START NEW RUN \n");
   printf("Input : %lld\n", input);

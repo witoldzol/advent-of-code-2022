@@ -34,7 +34,8 @@ int snafu_to_decimal_map(char n) {
   case '=':
     return -2;
   }
-  return -9; // error
+  printf("[ERROR] Invalid input to snafu map == %d\n", n);
+  exit(1);
 }
 
 long snafu_to_int(char *s) {

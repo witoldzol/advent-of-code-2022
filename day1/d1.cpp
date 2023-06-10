@@ -289,6 +289,10 @@ void decimal_to_snafu(long long input, char *output) {
   max pow(5,1) * 2 + pow(5,0) * 2 fits 61 ? no
   max pow(5,2) 2 + pow(5,1) * 2 + pow(5,0) * 2 fits 61 ? yes
   */
+  printf("*****************************************************\n");
+  printf("START NEW RUN \n");
+  printf("Input : %lld\n", input);
+  printf("*****************************************************\n");
   char temp[sizeof(output)];
   decimal_to_snafu_map(input, temp);
   // strcmp returns 0 if equal, which is false in if statement

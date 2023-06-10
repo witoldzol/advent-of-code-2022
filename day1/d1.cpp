@@ -135,14 +135,14 @@ void exit_if_over_two(float times) {
   }
 }
 
-void run_high(long long input, int power, char *output) {
+void get_snafu_number(long long input, int power, char *output) {
   long long reminder = input;
   char snafu_temp[100];
   for (int i = 0; i <= power; i++) {
     printf("================ Iteration start : i >> %d ================\n", i);
     long long max = pow(5, power - i);
     printf("[INFO] Max is %lld\n", max);
-    float times = reminder / (float) max;
+    float times = reminder / (float)max;
     printf("[INFO] Reminder is  %lld, times after calc is = %f\n", reminder,
            times);
     times = round_to_closest_int(times);
@@ -167,48 +167,6 @@ void run_high(long long input, int power, char *output) {
   strcpy(output, snafu_temp);
 }
 
-void run_low(long long input, int power, char *output) {
-  power--;
-  printf("[INFO] We can fit input [ %lld ], into expression with ( power - 1 )"
-         "one. Power after lowering by 1 = %d \n",
-         input, power);
-  long long reminder = input;
-  char snafu_temp[100] = {0};
-  for (int i = 0; i <= power; i++) {
-    printf("================ Iteration start : i >> %d ================\n", i);
-    long long max = pow(5, power - i);
-    printf("[INFO] Max is %lld\n", max);
-    float times = reminder / (float) max;
-    printf("[INFO] Reminder is  %lld, times after calc is = %f\n", reminder,
-           times);
-    times = round_to_closest_int(times);
-    printf("[INFO] Times after rounding= %.1f, index = %d\n", times, i);
-    exit_if_over_two(times);
-    if (times == 2 || times == 1 || times == -1 || times == -2) {
-      char t = decimal_to_snafu_map((int)times);
-      snafu_temp[i] = t;
-      snafu_temp[i + 1] = '\0';
-      printf("[INFO] After allocating snafu is == %s\n", snafu_temp);
-      reminder = input - (times * pow(5, power - i));
-      printf("[INFO] Reminder is == %lld\n", reminder);
-      if (reminder) {
-        input = reminder;
-        continue;
-      } else {
-        for (int j = i + 1; j <= power; j++) {
-          snafu_temp[j] = '0';
-        }
-        break;
-      }
-    } else {
-      snafu_temp[i] = '0';
-    }
-  }
-  printf("[INFO] *** Final SNAFU number is ==> %s for input %lld ***\n",
-         snafu_temp, input);
-  strcpy(output, snafu_temp);
-}
-
 void decimal_to_snafu(long long input, char *output) {
   printf("*****************************************************\n");
   printf("START NEW RUN \n");
@@ -227,10 +185,14 @@ void decimal_to_snafu(long long input, char *output) {
   int power = max_power(input);
   // test if we can fit input into lower bound
   if (is_lower_bound_available(power, input)) {
-    printf("[INFO] Starting lower bound run \n");
-    run_low(input, power, output);
+    power--;
+    printf(
+        "[INFO] We can fit input [ %lld ], into expression with ( power - 1 )"
+        "one. Power after lowering by 1 = %d \n",
+        input, power);
+    get_snafu_number(input, power, output);
   } else {
-    printf("[INFO] Lower bound NOT available, starting higher bound run \n");
-    run_high(input, power, output);
+    printf("[INFO] Lower power would NOT fit input, using power = %d\n", power);
+    get_snafu_number(input, power, output);
   }
 }

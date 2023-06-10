@@ -135,21 +135,22 @@ void exit_if_over_two(float times) {
   }
 }
 
-void run_highbound(long long input, int power, char *output) {
+void run_high(long long input, int power, char *output) {
   long long reminder = input;
   char snafu_temp[100];
   for (int i = 0; i <= power; i++) {
     printf("================ Iteration start : i >> %d ================\n", i);
     long long max = pow(5, power - i);
     printf("[INFO] Max is %lld\n", max);
-    float times = reminder / (float)max;
+    float times = reminder / (float) max;
     printf("[INFO] Reminder is  %lld, times after calc is = %f\n", reminder,
            times);
     times = round_to_closest_int(times);
     printf("[INFO] Times after rounding= %.1f, index = %d\n", times, i);
     exit_if_over_two(times);
     if (times == 0) {
-      times = (i == 0) ? 1 : 0; // I have no idea why this works, or is the case!
+      times =
+          (i == 0) ? 1 : 0; // I have no idea why this works, or is the case!
     }
     get_snafu_char(snafu_temp, times, i);
     reminder = reminder - (times * pow(5, power - i));
@@ -161,26 +162,28 @@ void run_highbound(long long input, int power, char *output) {
       break;
     }
   }
-  printf("[INFO] End of iteration, snafu number is => %s for input %lld\n", snafu_temp, input);
+  printf("[INFO] End of iteration, snafu number is => %s for input %lld\n",
+         snafu_temp, input);
   strcpy(output, snafu_temp);
 }
 
-void run_lowerbound(long long input, int power, char *output) {
+void run_low(long long input, int power, char *output) {
   power--;
-  printf("[INFO] Lower bound available for input %lld, we can lower power by "
-         "one. Current power = %d \n",
+  printf("[INFO] We can fit input [ %lld ], into expression with ( power - 1 )"
+         "one. Power after lowering by 1 = %d \n",
          input, power);
-  long long reminder;
+  long long reminder = input;
   char snafu_temp[100] = {0};
   for (int i = 0; i <= power; i++) {
-    // how many inputs can we fit into current max value at this power?
-    float times = input / pow(5, power - i);
-    printf("[INFO] Bracket [i = %d] [ max = %lld ], can fit [ times = %.1f ] "
-           "input = %lld\n",
-           i, (long long)pow(5, power - i), times, input);
+    printf("================ Iteration start : i >> %d ================\n", i);
+    long long max = pow(5, power - i);
+    printf("[INFO] Max is %lld\n", max);
+    float times = reminder / (float) max;
+    printf("[INFO] Reminder is  %lld, times after calc is = %f\n", reminder,
+           times);
     times = round_to_closest_int(times);
+    printf("[INFO] Times after rounding= %.1f, index = %d\n", times, i);
     exit_if_over_two(times);
-    printf("[INFO] times = %f, index = %d\n", times, i);
     if (times == 2 || times == 1 || times == -1 || times == -2) {
       char t = decimal_to_snafu_map((int)times);
       snafu_temp[i] = t;
@@ -225,9 +228,9 @@ void decimal_to_snafu(long long input, char *output) {
   // test if we can fit input into lower bound
   if (is_lower_bound_available(power, input)) {
     printf("[INFO] Starting lower bound run \n");
-    run_lowerbound(input, power, output);
+    run_low(input, power, output);
   } else {
     printf("[INFO] Lower bound NOT available, starting higher bound run \n");
-    run_highbound(input, power, output);
+    run_high(input, power, output);
   }
 }

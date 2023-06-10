@@ -139,19 +139,7 @@ void run_highbound(long long input, int power, char *output) {
     // todo = we can put her if (times == 0 ) and get rid of this logic
     if ((times < 3 && times >= 1) || (times > -3 && times < 0)) {
       printf("[INFO] -1- times is now => %f\n", times);
-      // if (times < 0) {
-      //   printf("[INFO] -2- times is now => %f\n", times);
-      //   if (times < -2.0) {
-      //     times = ceil(times);
-      //     printf("[INFO] -3- times is now => %f\n", times);
-      //   } else {
-      //     times = floor(times);
-      //     printf("[INFO] -4- times is now => %f\n", times);
-      //   }
-      // }
-      printf("hi mom ! &&&&&&&&&&&&&&&&&&&&, times is %f \n", times);
       times = floor(times);
-      printf("bye mom ! &&&&&&&&&&&&&&&&&&&&, times is %f \n", times);
       char temp = decimal_to_snafu_map(times);
       if (temp == 'e') {
         printf("[ERROR] Invalid number passed to snafu map, %d\n", (int)times);

@@ -128,7 +128,7 @@ void run_highbound(long long input, int power, char *output) {
       }
     }
     if (times > 0) {
-      if (times < 3.0) {
+      if (times > 2.0) {
         times = floor(times);
         printf("[INFO] -3- times is now => %f\n", times);
       } else if (times > 1.0 && times < 1.5) {

@@ -89,21 +89,21 @@ test_lower_bound(const MunitParameter params[], void* data) {
 }
 
 static MunitResult
-test_normalize_to_closest_int(const MunitParameter params[], void* data) {
-  munit_assert_true(0 == normalize_to_closest_int(0));
-  munit_assert_true(1 == normalize_to_closest_int(1));
-  munit_assert_true(-1 == normalize_to_closest_int(-1));
-  munit_assert_true(1 == normalize_to_closest_int(0.9));
-  munit_assert_true(0 == normalize_to_closest_int(0.4));
-  munit_assert_true(-1 == normalize_to_closest_int(-0.9));
-  munit_assert_true(0 == normalize_to_closest_int(-0.3));
-  munit_assert_true(-1 == normalize_to_closest_int(-0.5));
-  munit_assert_true(-2 == normalize_to_closest_int(-2.9));
-  munit_assert_true(2 == normalize_to_closest_int(2.9));
-  munit_assert_true(2 == normalize_to_closest_int(2));
-  munit_assert_true(-2 == normalize_to_closest_int(-2));
-  munit_assert_true(1 == normalize_to_closest_int(1.3));
-  munit_assert_true(-1 == normalize_to_closest_int(-1.3));
+test_round_to_closest_int(const MunitParameter params[], void* data) {
+  munit_assert_true(0 == round_to_closest_int(0));
+  munit_assert_true(1 == round_to_closest_int(1));
+  munit_assert_true(-1 == round_to_closest_int(-1));
+  munit_assert_true(1 == round_to_closest_int(0.9));
+  munit_assert_true(0 == round_to_closest_int(0.4));
+  munit_assert_true(-1 == round_to_closest_int(-0.9));
+  munit_assert_true(0 == round_to_closest_int(-0.3));
+  munit_assert_true(-1 == round_to_closest_int(-0.5));
+  munit_assert_true(-2 == round_to_closest_int(-2.9));
+  munit_assert_true(2 == round_to_closest_int(2.9));
+  munit_assert_true(2 == round_to_closest_int(2));
+  munit_assert_true(-2 == round_to_closest_int(-2));
+  munit_assert_true(1 == round_to_closest_int(1.3));
+  munit_assert_true(-1 == round_to_closest_int(-1.3));
 
   return MUNIT_OK;
 }
@@ -112,7 +112,7 @@ test_normalize_to_closest_int(const MunitParameter params[], void* data) {
 static MunitTest test_suite_tests[] = {
   { (char*) "decimal to snafu", test_decimal_to_snafu, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
   { (char*) "get_lower_bound", test_lower_bound, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
-  { (char*) "normalize_to_closest_int", test_normalize_to_closest_int, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
+  { (char*) "round_to_closest_int", test_round_to_closest_int, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
   { NULL, NULL, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL }
 };
 

@@ -6,4 +6,5 @@ void decimal_to_snafu_map(int n, char *output);
 bool is_lower_bound_available(int max_power, long input);
 int max_power(long long input);
 void run_lowerbound(long long input, int power, char *output);
-int normalize_to_closest_int(float n);
+int round_to_closest_int(float n);
+void exit_if_over_two(float times);

@@ -6,9 +6,9 @@
 
 bool is_lower_bound_available(int max_power, long input);
 
-int normalize_to_closest_int(float n) {
+int round_to_closest_int(float n) {
   // handle over 2's usecase, where 2-2.99 rounds down ( up for negative )
-  if (abs(n) > 2){
+  if (abs(n) > 2) {
     if (n > 0) {
       return floor(n);
     }
@@ -17,9 +17,7 @@ int normalize_to_closest_int(float n) {
   return round(n);
 }
 
-float log_a_to_base_b(long long a, int b) {
-  return log2(a)/log2(b);
-};
+float log_a_to_base_b(long long a, int b) { return log2(a) / log2(b); };
 
 int snafu_to_decimal_map(char n) {
   switch (n) {
@@ -66,8 +64,6 @@ bool is_lower_bound_available(int max_power, long input) {
     printf("[INFO] Max total = %lld, input = %ld, abs() input = %ld\n", total,
            input, abs(input));
     if (total >= abs(input)) {
-      printf("INFO - We can fit into the lower bound, we can lower max power "
-             "by one\n");
       return true;
     }
   }
@@ -109,33 +105,19 @@ int max_power(long long input) {
 
 void run_highbound(long long input, int power, char *output) {
   long long reminder = input;
-  printf("[INFO] Lower bound NOT available for input %lld. Power == %d\n",
-         reminder, power);
   char snafu_temp[100];
   for (int i = 0; i <= power; i++) {
-    printf(
-        "=================== Iteration start : i >> %d ===================\n",
-        i);
+    printf("================ Iteration start : i >> %d ================\n", i);
     long long max = pow(5, power - i);
     printf("[INFO] Max is %lld\n", max);
-    float max_float = (float)max;
-    printf("[INFO] Max to float is %f\n", max_float);
-    float times = reminder / max_float;
+    float times = reminder / (float)max;
     printf("[INFO] Reminder is  %lld, times after calc is = %f\n", reminder,
            times);
-    times = normalize_to_closest_int(times);
-    if (times > 2 || times < -2) {
-      printf("Iteration %d, max power = %d, input = %lld\n.", i, power,
-             reminder);
-      printf("Exiting because we got 'times' value higher than 2, which is "
-             "illegal in snafu system\n");
-      exit(1);
-    }
-    printf("[INFO] times = %f, index = %d\n", times, i);
+    times = round_to_closest_int(times);
+    printf("[INFO] Times after rounding= %.1f, index = %d\n", times, i);
+    exit_if_over_two(times);
     // todo = we can put her if (times == 0 ) and get rid of this logic
     if ((times < 3 && times >= 1) || (times > -3 && times < 0)) {
-      printf("[INFO] -1- times is now => %f\n", times);
-      times = floor(times);
       char temp = decimal_to_snafu_map(times);
       if (temp == 'e') {
         printf("[ERROR] Invalid number passed to snafu map, %d\n", (int)times);
@@ -190,28 +172,31 @@ void run_highbound(long long input, int power, char *output) {
   strcpy(output, snafu_temp);
 }
 
+void exit_if_over_two(float times) {
+  if (times > 2) {
+    printf("[ERROR] Exiting because we got 'times' == %d value higher than "
+           "2, which is "
+           "illegal in snafu system",
+           (int)times);
+    exit(1);
+  }
+}
+
 void run_lowerbound(long long input, int power, char *output) {
   power--;
-  printf("[INFO] Lower bound available for input %lld, power = %d \n", input,
-         power);
+  printf("[INFO] Lower bound available for input %lld, we can lower power by "
+         "one. Current power = %d \n",
+         input, power);
   long long reminder;
   char snafu_temp[100] = {0};
   for (int i = 0; i <= power; i++) {
-    // how many 5s can we fit into this bit?
+    // how many inputs can we fit into current max value at this power?
     float times = input / pow(5, power - i);
-    printf("[INFO] How many 5s can we fit ?\n");
-    printf("[INFO] pow(5, power (%d) - index (%d)? ==> %f \n", power, i, times);
-
-    times = normalize_to_closest_int(times);
-    if (times > 2) {
-      printf("[INFO] Iteration %d, max power = %d, input = %lld\n.", i, power,
-             input);
-      printf("[ERROR] Exiting because we got 'times' == %d value higher than "
-             "2, which is "
-             "illegal in snafu system",
-             (int)times);
-      exit(1);
-    }
+    printf("[INFO] Bracket [i = %d] [ max = %lld ], can fit [ times = %.1f ] "
+           "input = %lld\n",
+           i, (long long)pow(5, power - i), times, input);
+    times = round_to_closest_int(times);
+    exit_if_over_two(times);
     printf("[INFO] times = %f, index = %d\n", times, i);
     if (times == 2 || times == 1 || times == -1 || times == -2) {
       char t = decimal_to_snafu_map((int)times);
@@ -259,6 +244,7 @@ void decimal_to_snafu(long long input, char *output) {
     printf("[INFO] Starting lower bound run \n");
     run_lowerbound(input, power, output);
   } else {
+    printf("[INFO] Lower bound NOT available, starting higher bound run \n");
     run_highbound(input, power, output);
   }
 }

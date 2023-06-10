@@ -6,6 +6,36 @@
 
 bool is_lower_bound_available(int max_power, long input);
 
+int normalize_to_closest_int(float n) {
+  // > 2
+  // 1.9 - 1.5
+  // 1.49 - 1
+  // 0.9 - 0.5
+  // 0.49 - 0
+  if (n == 0) {
+    return 0;
+  }
+  if (abs(n) > 2){
+    if (n > 0) {
+      return floor(n);
+    }
+    return ceil(n);
+  }
+  if (abs(n) >= 1.5 && abs(n) > 1) {
+    if (n > 0) {
+      return ceil(n);
+    }
+    return floor(n);
+  } 
+  if (abs(n) >= 0.5 && abs(n) < 1) {
+    if (n > 0) {
+      return ceil(n);
+    }
+    return floor(n);
+  }
+  return (int)n;
+}
+
 float log_a_to_base_b(long long a, int b) {
   float x = log2(a);
   printf("log2 of %lld is %f\n", a, x);
@@ -113,35 +143,8 @@ void run_highbound(long long input, int power, char *output) {
     float times = reminder / max_float;
     printf("[INFO] Reminder is  %lld, times after calc is = %f\n", reminder,
            times);
-    if (times < 0) {
-      printf("[INFO] -2- times is now => %f\n", times);
-      if (times < -2.0) {
-        times = ceil(times);
-        printf("[INFO] -3- times is now => %f\n", times);
-      } else if (times < -1.0 && times > -1.5) {
-        times = ceil(times);
-      } else if (times < 0 && times > -0.5) {
-        times = ceil(times);
-      } else {
-        times = floor(times);
-        printf("[INFO] -4- times is now => %f\n", times);
-      }
-    }
-    if (times > 0) {
-      if (times > 2.0) {
-        times = floor(times);
-        printf("[INFO] -3- times is now => %f\n", times);
-      } else if (times > 1.0 && times < 1.5) {
-        times = floor(times);
-      } else if (times > 0 && times < 0.5) {
-        times = floor(times);
-      } else {
-        times = ceil(times);
-        printf("[INFO] -4- times is now => %f\n", times);
-      }
-    }
+    times = normalize_to_closest_int(times);
     if (times > 2 || times < -2) {
-
       printf("Iteration %d, max power = %d, input = %lld\n.", i, power,
              reminder);
       printf("Exiting because we got 'times' value higher than 2, which is "
@@ -172,7 +175,7 @@ void run_highbound(long long input, int power, char *output) {
         for (int j = i + 1; j <= power; j++) {
           snafu_temp[j] = '0';
         }
-	snafu_temp[i+2] = '\0';
+        snafu_temp[i + 2] = '\0';
         break;
       }
       // TIMES == 0
@@ -220,14 +223,8 @@ void run_lowerbound(long long input, int power, char *output) {
     printf("[INFO] How many 5s can we fit ?\n");
     printf("[INFO] pow(5, power (%d) - index (%d)? ==> %f \n", power, i, times);
 
-    if (times < 2.0 && times > 1.5) {
-      times = ceil(times);
-      printf("[INFO] -3- times is now => %f\n", times);
-    } else {
-      times = floor(times);
-      printf("[INFO] -4- times is now => %f\n", times);
-    }
-    if (((int)times) > 2) {
+    times = normalize_to_closest_int(times);
+    if (times > 2) {
       printf("[INFO] Iteration %d, max power = %d, input = %lld\n.", i, power,
              input);
       printf("[ERROR] Exiting because we got 'times' == %d value higher than "

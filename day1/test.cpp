@@ -61,11 +61,11 @@ test_decimal_to_snafu(const MunitParameter params[], void* data) {
   decimal_to_snafu(12345, output);
   printf("outpout is : %s\n", output);
   munit_assert_true(!strcmp(output, "1-0---0")); //strcmp returns 0 if equal, so negate it
-						 //
+
   decimal_to_snafu(314159265, output);
   printf("outpout is : %s\n", output);
   munit_assert_true(!strcmp(output, "1121-1110-1=0")); //strcmp returns 0 if equal, so negate it
-  
+
   return MUNIT_OK;
 }
 
@@ -84,38 +84,31 @@ test_lower_bound(const MunitParameter params[], void* data) {
   return MUNIT_OK;
 }
 
+static MunitResult
+test_normalize_to_closest_int(const MunitParameter params[], void* data) {
+  munit_assert_true(0 == normalize_to_closest_int(0));
+  munit_assert_true(1 == normalize_to_closest_int(1));
+  munit_assert_true(-1 == normalize_to_closest_int(-1));
+  munit_assert_true(1 == normalize_to_closest_int(0.9));
+  munit_assert_true(0 == normalize_to_closest_int(0.4));
+  munit_assert_true(-1 == normalize_to_closest_int(-0.9));
+  munit_assert_true(0 == normalize_to_closest_int(-0.3));
+  munit_assert_true(-1 == normalize_to_closest_int(-0.5));
+  munit_assert_true(-2 == normalize_to_closest_int(-2.9));
+  munit_assert_true(2 == normalize_to_closest_int(2.9));
+  munit_assert_true(2 == normalize_to_closest_int(2));
+  munit_assert_true(-2 == normalize_to_closest_int(-2));
+  munit_assert_true(1 == normalize_to_closest_int(1.3));
+  munit_assert_true(-1 == normalize_to_closest_int(-1.3));
+
+  return MUNIT_OK;
+}
 /* Creating a test suite is pretty simple.  First, you'll need an
  * array of tests: */
 static MunitTest test_suite_tests[] = {
-  {
-    /* The name is just a unique human-readable way to identify the
-     * test. You can use it to run a specific test if you want, but
-     * usually it's mostly decorative. */
-    (char*) "decimal to snafu",
-    /* You probably won't be surprised to learn that the tests are
-     * functions. */
-    test_decimal_to_snafu,
-    /* If you want, you can supply a function to set up a fixture.  If
-     * you supply NULL, the user_data parameter from munit_suite_main
-     * will be used directly.  If, however, you provide a callback
-     * here the user_data parameter will be passed to this callback,
-     * and the return value from this callback will be passed to the
-     * test function.
-     *
-     * For our example we don't really need a fixture, but lets
-     * provide one anyways. */
-    NULL,
-    /* If you passed a callback for the fixture setup function, you
-     * may want to pass a corresponding callback here to reverse the
-     * operation. */
-    NULL,
-    /* Finally, there is a bitmask for options you can pass here.  You
-     * can provide either MUNIT_TEST_OPTION_NONE or 0 here to use the
-     * defaults. */
-    MUNIT_TEST_OPTION_NONE,
-    NULL
-  },
+  { (char*) "decimal to snafu", test_decimal_to_snafu, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
   { (char*) "get_lower_bound", test_lower_bound, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
+  { (char*) "normalize_to_closest_int", test_normalize_to_closest_int, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL },
   { NULL, NULL, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL }
 };
 
@@ -159,3 +152,35 @@ int main(int argc, char* argv[MUNIT_ARRAY_PARAM(argc + 1)]) {
    * test or (if provided) the fixture setup function. */
   return munit_suite_main(&test_suite, (void*) "µnit", argc, argv);
 }
+
+/*
+ * ******************** SAMPLE SUITE *********************
+   {
+      // The name is just a unique human-readable way to identify the
+      //  test. You can use it to run a specific test if you want, but
+      //  usually it's mostly decorative. 
+     (char*) "decimal to snafu",
+      // You probably won't be surprised to learn that the tests are
+      //  functions. 
+     test_decimal_to_snafu,
+      // If you want, you can supply a function to set up a fixture.  If
+      //  you supply NULL, the user_data parameter from munit_suite_main
+      //  will be used directly.  If, however, you provide a callback
+      //  here the user_data parameter will be passed to this callback,
+      //  and the return value from this callback will be passed to the
+      //  test function.
+      // 
+      //  For our example we don't really need a fixture, but lets
+      //  provide one anyways. 
+     NULL,
+      // If you passed a callback for the fixture setup function, you
+      //  may want to pass a corresponding callback here to reverse the
+      //  operation. 
+     NULL,
+      // Finally, there is a bitmask for options you can pass here.  You
+      //  can provide either MUNIT_TEST_OPTION_NONE or 0 here to use the
+      //  defaults. 
+     MUNIT_TEST_OPTION_NONE,
+     NULL
+   },
+ */

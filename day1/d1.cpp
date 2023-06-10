@@ -5,6 +5,15 @@
 #include <string.h>
 
 bool is_lower_bound_available(int max_power, long input);
+void fill_reminder_of_array_with_zeros(char *arr, int start, int end);
+
+void fill_reminder_of_array_with_zeros(char *arr, int start, int end) {
+  int j = start + 1;
+  for (; j <= end; j++) {
+    arr[j] = '0';
+  }
+  arr[j] = '\0';
+}
 
 int round_to_closest_int(float n) {
   // handle over 2's usecase, where 2-2.99 rounds down ( up for negative )
@@ -120,36 +129,33 @@ void run_highbound(long long input, int power, char *output) {
     if ((times < 3 && times >= 1) || (times > -3 && times < 0)) {
       char temp = decimal_to_snafu_map(times);
       if (temp == 'e') {
-        printf("[ERROR] Invalid number passed to snafu map, %d\n", (int)times);
+        printf("[ERROR] Invalid number passed to snafu map, %f\n", times);
         exit(1);
       }
       snafu_temp[i] = temp;
       snafu_temp[i + 1] = '\0';
-      printf("[INFO] After allocating snafu is == `%s`\n", snafu_temp);
-      printf("[INFO] reminder before new calc is %lld\n", reminder);
-      printf("current times = %f\n", times);
+      printf("[INFO] After pushing new number, temporary snafu is == `%s`\n",
+             snafu_temp);
       reminder = reminder - (times * pow(5, power - i));
-      printf("[INFO] reminder after new calc is %lld\n", reminder);
+      printf("[INFO] Reminder is %lld\n", reminder);
       if (reminder) {
         continue;
       } else {
-        // no reminder, we can fill the rest of array with zeros
-        for (int j = i + 1; j <= power; j++) {
-          snafu_temp[j] = '0';
-        }
-        snafu_temp[i + 2] = '\0';
+        fill_reminder_of_array_with_zeros(snafu_temp, i, power);
         break;
       }
-      // TIMES == 0
     } else {
-      printf("^^^ TIMES EQUALS ZERO CASE  ^^^ \n");
-      printf("[INFO] Iteration == %d\n", i);
-      if (i == 0) {
+      printf("[INFO] TIMES EQUALS ZERO CASE. Iteration == %d\n", i);
+      if (i == 0) { // if this is the very first numer, we use 1, don't ask me why
         times = 1;
       } else {
-        times = 0;
+        times = 0; // otherwise 0
       }
       char temp = decimal_to_snafu_map(times);
+      if (temp == 'e') {
+        printf("[ERROR] Invalid number passed to snafu map, %f\n", times);
+        exit(1);
+      }
       snafu_temp[i] = temp;
       snafu_temp[i + 1] = '\0';
       printf("[INFO] After allocating snafu is == `%s`\n", snafu_temp);

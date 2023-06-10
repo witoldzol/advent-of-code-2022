@@ -127,6 +127,19 @@ void run_highbound(long long input, int power, char *output) {
         printf("[INFO] -4- times is now => %f\n", times);
       }
     }
+    if (times > 0) {
+      if (times < 3.0) {
+        times = floor(times);
+        printf("[INFO] -3- times is now => %f\n", times);
+      } else if (times > 1.0 && times < 1.5) {
+        times = floor(times);
+      } else if (times > 0 && times < 0.5) {
+        times = floor(times);
+      } else {
+        times = ceil(times);
+        printf("[INFO] -4- times is now => %f\n", times);
+      }
+    }
     if (times > 2 || times < -2) {
 
       printf("Iteration %d, max power = %d, input = %lld\n.", i, power,

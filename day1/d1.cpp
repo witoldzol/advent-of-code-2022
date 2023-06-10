@@ -7,42 +7,18 @@
 bool is_lower_bound_available(int max_power, long input);
 
 int normalize_to_closest_int(float n) {
-  // > 2
-  // 1.9 - 1.5
-  // 1.49 - 1
-  // 0.9 - 0.5
-  // 0.49 - 0
-  if (n == 0) {
-    return 0;
-  }
+  // handle over 2's usecase, where 2-2.99 rounds down ( up for negative )
   if (abs(n) > 2){
     if (n > 0) {
       return floor(n);
     }
     return ceil(n);
   }
-  if (abs(n) >= 1.5 && abs(n) > 1) {
-    if (n > 0) {
-      return ceil(n);
-    }
-    return floor(n);
-  } 
-  if (abs(n) >= 0.5 && abs(n) < 1) {
-    if (n > 0) {
-      return ceil(n);
-    }
-    return floor(n);
-  }
-  return (int)n;
+  return round(n);
 }
 
 float log_a_to_base_b(long long a, int b) {
-  float x = log2(a);
-  printf("log2 of %lld is %f\n", a, x);
-  float y = log2(b);
-  printf("log2 of %d is %f\n", b, y);
-  printf("x =  %f / y = %f => %f\n", x, y, x / y);
-  return x / y;
+  return log2(a)/log2(b);
 };
 
 int snafu_to_decimal_map(char n) {
@@ -81,12 +57,12 @@ bool is_lower_bound_available(int max_power, long input) {
   printf("[INFO] Calculating if lower bound is possible, max power = %d, input "
          "= %ld\n",
          max_power, input);
-  int total = 0;
+  long long total = 0;
   if (max_power > 0) {
     for (int i = 0; i < max_power; i++) {
       total += pow(5, i) * 2; // 2 is max digit in snafu range
     }
-    printf("[INFO] Max total = %d, input = %ld, abs() input = %ld\n", total,
+    printf("[INFO] Max total = %lld, input = %ld, abs() input = %ld\n", total,
            input, abs(input));
     if (total >= abs(input)) {
       printf("INFO - We can fit into the lower bound, we can lower max power "

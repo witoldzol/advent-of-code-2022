@@ -15,7 +15,6 @@ int main() {
     snafu_total += snafu_to_int(buffer);
   }
   char result_as_snafu[100];
-  snafu_total = 10;
   decimal_to_snafu(snafu_total, result_as_snafu);
   fclose(fp);
   printf("result is %ld\n", snafu_total);

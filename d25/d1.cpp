@@ -183,7 +183,7 @@ void decimal_to_snafu(long long input, char *output) {
     return;
   }
   int power = max_power(input);
-  // test if we can fit input into lower bound
+  // test if we can fit input into power - 1 bracket
   if (is_low_power_enough(power, input)) {
     power--;
     printf(

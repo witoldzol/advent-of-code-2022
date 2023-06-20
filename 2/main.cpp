@@ -80,7 +80,6 @@ void sample_tests() {
     score += move_score(player);
     score += scissor_game(player, enemy);
   }
-  printf("the end\n");
   fclose(fp);
   printf("PLAYER SCORE = %zu\n", score);
 }

@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <cstring>
 #include <stdio.h>
 
 char enemy_move_map(char a) {
@@ -28,6 +29,20 @@ char player_move_map(char a) {
   }
 }
 
+int move_score(char a){
+  switch (a) {
+  case 'R':
+    return 1;
+  case 'P':
+    return 2;
+  case 'S':
+    return 3;
+  default:
+    printf("[ERROR] Invalid input : %c, exiting game", a);
+    exit(1);
+  }
+}
+
 int scissor_game(char player, char enemy) {
   if (player == enemy)
     return 3;
@@ -53,12 +68,21 @@ void sample_tests() {
   if (fp == NULL) {
     exit(1);
   }
-  int line_length = 255;
+  int line_length = 5;
   char line[line_length];
+  char player,enemy;
+  size_t score = 0;
   while (fgets(line, line_length, fp)) {
-    printf("%s\n", line);
+    enemy = enemy_move_map(line[0]);
+    player = player_move_map(line[2]);
+    printf("[INFO] Input line: %s", line);
+    printf("[INFO] player = %c, enemy = %c\n", player, enemy);
+    score += move_score(player);
+    score += scissor_game(player, enemy);
   }
   printf("the end\n");
+  fclose(fp);
+  printf("PLAYER SCORE = %zu\n", score);
 }
 
 int main() { sample_tests(); }

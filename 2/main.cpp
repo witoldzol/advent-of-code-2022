@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <cstdlib>
 #include <cstring>
 #include <stdio.h>
@@ -29,7 +30,7 @@ char player_move_map(char a) {
   }
 }
 
-int move_score(char a){
+int move_score(char a) {
   switch (a) {
   case 'R':
     return 1;
@@ -56,22 +57,23 @@ int scissor_game(char player, char enemy) {
     return 6;
   if (player == 'P' && enemy == 'R')
     return 6;
-  if (player == 'P' && enemy == 'P')
+  if (player == 'P' && enemy == 'S')
     return 0;
   printf("[ERROR] Invalid input ( player = %c , enemy = %c ), exiting game",
          player, enemy);
   exit(1);
 }
 
-void sample_tests() {
-  FILE *fp = fopen("sample_input", "r");
+int calculate(char file_name[]) {
+  FILE *fp = fopen(file_name, "r");
   if (fp == NULL) {
     exit(1);
   }
   int line_length = 5;
   char line[line_length];
-  char player,enemy;
+  char player, enemy;
   size_t score = 0;
+  printf("[INFO] ========= START =========== \n");
   while (fgets(line, line_length, fp)) {
     enemy = enemy_move_map(line[0]);
     player = player_move_map(line[2]);
@@ -80,8 +82,17 @@ void sample_tests() {
     score += move_score(player);
     score += scissor_game(player, enemy);
   }
+  printf("[INFO] ========= END =========== \n");
   fclose(fp);
-  printf("PLAYER SCORE = %zu\n", score);
+  return score;
 }
 
-int main() { sample_tests(); }
+int main() {
+  char sample_input[] = "sample_input";
+  int sample_score = calculate(sample_input);
+  assert(sample_score == 15);
+  
+  char input[] = "input";
+  int score = calculate(input);
+  printf("%d\n",score);
+}

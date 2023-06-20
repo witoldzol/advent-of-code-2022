@@ -17,19 +17,6 @@ char enemy_move_map(char a) {
   }
 }
 
-char player_move_map(char a) {
-  switch (a) {
-  case 'X':
-    return 'R';
-  case 'Y':
-    return 'P';
-  case 'Z':
-    return 'S';
-  default:
-    return 'e';
-  }
-}
-
 int move_score(char a) {
   switch (a) {
   case 'R':
@@ -42,6 +29,40 @@ int move_score(char a) {
     printf("[ERROR] Invalid input : %c, exiting game", a);
     exit(1);
   }
+}
+
+char player_move_map_2(char enemy_move, char expected_result) {
+  /*
+   * S - scissor
+   * R - rock
+   * P - paper
+   */
+  // Y -- draw
+  if (expected_result == 'Y')
+    return enemy_move;
+  // X -- loose
+  if (enemy_move == 'R' && expected_result == 'X') {
+    return 'S';
+  }
+  if (enemy_move == 'S' && expected_result == 'X') {
+    return 'P';
+  }
+  if (enemy_move == 'P' && expected_result == 'X') {
+    return 'R';
+  }
+  // Z -- win
+  if (enemy_move == 'R' && expected_result == 'Z') {
+    return 'P';
+  }
+  if (enemy_move == 'S' && expected_result == 'Z') {
+    return 'R';
+  }
+  if (enemy_move == 'P' && expected_result == 'Z') {
+    return 'S';
+  }
+  printf("[ERROR] Invalid input : expected_result = %c, enemy_move = %c",
+         expected_result, enemy_move);
+  exit(1);
 }
 
 int scissor_game(char player, char enemy) {
@@ -71,13 +92,14 @@ int calculate(char file_name[]) {
   }
   int line_length = 5;
   char line[line_length];
-  char player, enemy;
+  char player, enemy, expected_result;
   size_t score = 0;
   printf("[INFO] ========= START =========== \n");
   while (fgets(line, line_length, fp)) {
-    enemy = enemy_move_map(line[0]);
-    player = player_move_map(line[2]);
     printf("[INFO] Input line: %s", line);
+    enemy = enemy_move_map(line[0]);
+    expected_result = line[2];
+    player = player_move_map_2(enemy, expected_result);
     printf("[INFO] player = %c, enemy = %c\n", player, enemy);
     score += move_score(player);
     score += scissor_game(player, enemy);
@@ -90,9 +112,9 @@ int calculate(char file_name[]) {
 int main() {
   char sample_input[] = "sample_input";
   int sample_score = calculate(sample_input);
-  assert(sample_score == 15);
-  
+  assert(sample_score == 12);
+
   char input[] = "input";
   int score = calculate(input);
-  printf("%d\n",score);
+  assert(score == 14060);
 }

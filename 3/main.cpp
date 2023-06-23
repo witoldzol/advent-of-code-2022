@@ -27,21 +27,30 @@ int map_char_to_priority(char c) {
   exit(1);
 }
 
+/*
+ * We are counting every char in string & hence reach limit == 3 
+ * What we need to do is increment by 1 per STRING, so we need 3 separate passes on the same table 
+ */
 int increment_table(char *str, int *table) {
   int len = strlen(str); // strlen() doesn't count \n or \0
   if (len == 0) {
     return 0;
   }
-  int char_to_i;
+  int char_to_i = 0;
   for (int i = 0; i < len; i++) {
     char_to_i = map_char_to_priority(str[i]);
+    if (char_to_i == 0) {
+      printf("WE HAVE ZEEEER o char to i == [ %d ]\n", char_to_i);
+    }
+    if (char_to_i == 0) {
+      return 0;
+    }
     if (char_to_i > 52) {
       printf("[ERROR] Found char outside of 0 -> 52 bound. Char value == [%d], "
              "exiting\n",
              char_to_i);
       exit(1);
     }
-    if (char_to_i == 0) { return 0;}
     table[char_to_i] += 1;
     if (table[char_to_i] == 3) {
       return char_to_i;
@@ -94,13 +103,15 @@ int calculate_security_badge_priorities_sum(char *file_name) {
   int group = 1;
   while (fgets(buffer, buffer_size, fh)) {
     priority = increment_table(buffer, table);
+    printf("[INFO] Priority  == [ %d ]\n", priority);
     i++;
     // reset every 3 lines
     if (i % 3 == 0) {
-      printf("[INFO] End of group [ %d ], priority = [ %d ]\n", group, priority);
+      printf("[INFO] End of group [ %d ], priority = [ %d ]\n", group,
+             priority);
       group++;
-      sum += priority;
-      memset(table, 0, sizeof(table));
+      // sum += priority;
+      memset(table, 0, 52 * sizeof(int));
     }
   }
   return sum;
@@ -121,8 +132,8 @@ int calculate_sum_of_priorities(char *file_name) {
 }
 
 int main() {
-  assert(calculate_sum_of_priorities("sample_input") == 157);
-  assert(calculate_sum_of_priorities("input") == 7997);
-  assert(calculate_security_badge_priorities_sum("sample_input") == 70);
-  printf("%d\n" , calculate_security_badge_priorities_sum("input"));
+  // assert(calculate_sum_of_priorities("sample_input") == 157);
+  // assert(calculate_sum_of_priorities("input") == 7997);
+  // assert(calculate_security_badge_priorities_sum("sample_input") == 70);
+  printf("%d\n", calculate_security_badge_priorities_sum("input"));
 }

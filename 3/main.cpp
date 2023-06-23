@@ -2,33 +2,9 @@
 #include <cstdlib>
 #include <cstring>
 #include <stdio.h>
+#include <stdlib.h>
 
 #define INPUT_LINES 300
-// divide in half
-// find common char (only one?)
-// map common char to int
-// sum
-
-char get_common_char(char *str) {
-  int len = strlen(str); // strlen() doesn't count \n or \0
-  if (len == 0) {
-    return '\0';
-  }
-  int middle = len / 2; // middle points at the first char of second half
-  printf("[INFO] Middle point is == [ %d ] for string of length == [ %d ]\n",
-         middle, len);
-  for (int i = 0; i < middle; i++) {
-    char char_i = str[i];
-    for (int j = middle; j < len; j++) {
-      char char_j = str[j];
-      if (char_i == char_j) {
-        return char_i;
-      }
-    }
-  }
-  printf("[ERROR] Did not find common char, exiting\n");
-  exit(1);
-}
 
 int map_char_to_priority(char c) {
   // a == 97, we map it to 1, so we substract 96 to get 1
@@ -44,20 +20,47 @@ int map_char_to_priority(char c) {
   printf("[ERROR] Invalid input, char == [ %c ] found, exiting\n", c);
   exit(1);
 }
-int calculate_sum_of_priorities(char *file_name){
+
+int get_common_char(char *str) {
+  int len = strlen(str); // strlen() doesn't count \n or \0
+  if (len == 0) {
+    return '\0';
+  }
+  int middle = len / 2; // middle points at the first char of second half
+  printf("[INFO] Middle point is == [ %d ] for string of length == [ %d ]\n",
+         middle, len);
+  int first_half[52] = {0}; //52 is max number of expected chars that we can find in supplied input
+  //iterate over first half & populate fields
+  for (int i = 0; i < middle; i++) {
+    int char_to_i = map_char_to_priority(str[i]);
+    if(char_to_i > 52){
+      printf("[ERROR] Found char outside of 0 -> 52 bound. Char value == [%d], exiting\n", char_to_i);
+      exit(1);
+    }
+    first_half[char_to_i] = 1;
+  }
+  //find the matching char (corresponding vlaue)
+  for (int j = middle; j < len; j++) {
+    int char_to_i = map_char_to_priority(str[j]);
+    if (first_half[char_to_i] == 1){
+      printf("[INFO] Found a common char, value == [ %d ]\n", char_to_i);
+      return char_to_i;
+    }
+  }
+  printf("[ERROR] Did not find common char, exiting\n");
+  exit(1);
+}
+
+int calculate_sum_of_priorities(char *file_name) {
   FILE *fh = fopen(file_name, "r");
   size_t buffer_size = 255;
   char buffer[buffer_size];
   char common_chars[INPUT_LINES] = {0};
   int i = 0;
-  while (fgets(buffer, buffer_size, fh)) {
-    char cc = get_common_char(buffer);
-    common_chars[i] = cc;
-    i++;
-  }
   size_t sum = 0;
-  for (int i = 0; i < INPUT_LINES; i++) {
-    sum += map_char_to_priority(common_chars[i]);
+  while (fgets(buffer, buffer_size, fh)) {
+    sum+= get_common_char(buffer);
+    i++;
   }
   return sum;
 }

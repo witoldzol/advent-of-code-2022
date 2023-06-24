@@ -19,8 +19,13 @@ int map_char_to_priority(char c) {
     return 0;
   }
   if (c >= 'a' && c <= 'z') {
+    // printf("[INFO] Char = %c => %d\n", c, ((int)c - 96));
     return ((int)c) - 96;
   } else if (c >= 'A' && c <= 'Z') {
+    if (c == 'Z') {
+      printf("FOUND ZZZZZ !");
+      printf("[INFO] Char = %c => %d\n", c, ((int)c - 38));
+    }
     return ((int)c) - 38;
   }
   printf("[ERROR] Invalid input, char == [ %c ] found, exiting\n", c);
@@ -32,7 +37,8 @@ int map_char_to_priority(char c) {
  * What we need to do is increment by 1 per STRING, so we need 3 separate passes
  * on the same table
  */
-int increment_table(char *str, int *table, int max) {
+int increment_table(char *str, int *table) {
+  int temp[53] = {0};
   int len = strlen(str); // strlen() doesn't count \n or \0
   if (len == 0) {
     return 0;
@@ -49,16 +55,18 @@ int increment_table(char *str, int *table, int max) {
              char_to_i);
       exit(1);
     }
-    if (table[char_to_i] < max) {
+    if (temp[char_to_i] == 0) {
+      temp[char_to_i] = 1;
       table[char_to_i] += 1;
+      printf("table[%d] == %d\n", char_to_i, table[char_to_i]);
+    }
+    if (table[char_to_i] == 3) {
+      printf("[INFO] Found common char = [ %d ] \n", char_to_i);
+      return char_to_i;
     }
   }
   for (int y = 0; y < 52; y++) {
     printf("%d", table[y]);
-  }
-  if (table[char_to_i] == 3) {
-    printf("[INFO] Found common char = [ %d ] ", char_to_i);
-    return char_to_i;
   }
   printf("\n");
   return 0;
@@ -103,17 +111,14 @@ int calculate_security_badge_priorities_sum(char *file_name) {
   char buffer[buffer_size];
   int table[52] = {0};
   int i = 0;
-  int max = 1;
   int sum = 0;
   while (fgets(buffer, buffer_size, fh)) {
-    sum += increment_table(buffer, table, max);
+    sum += increment_table(buffer, table);
     i++;
-    max++;
-    printf("===============\n");
     if (i % 3 == 0) {
       memset(table, 0, 52 * sizeof(int));
       i = 0;
-      max = 1;
+      printf("===== END ==========\n");
     }
   }
   return sum;

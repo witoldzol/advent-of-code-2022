@@ -6,12 +6,7 @@
 #include <strings.h>
 
 #define INPUT_LINES 300
-/*
- * split input nito groups of 3 lines
- * for each group find item that repeats 3 times ( increment values )
- * so instead of incrementing over halfs of each line, we increment over entire
- * lines
- */
+
 int map_char_to_priority(char c) {
   // a == 97, we map it to 1, so we substract 96 to get 1
   // A == 65, we map it to 27, so we substract 38 to get 27
@@ -22,10 +17,6 @@ int map_char_to_priority(char c) {
     // printf("[INFO] Char = %c => %d\n", c, ((int)c - 96));
     return ((int)c) - 96;
   } else if (c >= 'A' && c <= 'Z') {
-    if (c == 'Z') {
-      printf("FOUND ZZZZZ !");
-      printf("[INFO] Char = %c => %d\n", c, ((int)c - 38));
-    }
     return ((int)c) - 38;
   }
   printf("[ERROR] Invalid input, char == [ %c ] found, exiting\n", c);
@@ -58,14 +49,13 @@ int increment_table(char *str, int *table) {
     if (temp[char_to_i] == 0) {
       temp[char_to_i] = 1;
       table[char_to_i] += 1;
-      printf("table[%d] == %d\n", char_to_i, table[char_to_i]);
     }
     if (table[char_to_i] == 3) {
       printf("[INFO] Found common char = [ %d ] \n", char_to_i);
       return char_to_i;
     }
   }
-  for (int y = 0; y < 52; y++) {
+  for (int y = 0; y <= 53; y++) {
     printf("%d", table[y]);
   }
   printf("\n");
@@ -80,7 +70,7 @@ int get_common_char(char *str) {
   int middle = len / 2; // middle points at the first char of second half
   printf("[INFO] Middle point is == [ %d ] for string of length == [ %d ]\n",
          middle, len);
-  int first_half[52] = {0}; // 52 is max number of expected chars that we can
+  int first_half[53] = {0}; // 52 is max number of expected chars that we can
                             // find in supplied input
   // iterate over first half & populate fields
   for (int i = 0; i < middle; i++) {
@@ -109,16 +99,15 @@ int calculate_security_badge_priorities_sum(char *file_name) {
   FILE *fh = fopen(file_name, "r");
   size_t buffer_size = 255;
   char buffer[buffer_size];
-  int table[52] = {0};
+  int table[53] = {0};
   int i = 0;
   int sum = 0;
   while (fgets(buffer, buffer_size, fh)) {
     sum += increment_table(buffer, table);
     i++;
     if (i % 3 == 0) {
-      memset(table, 0, 52 * sizeof(int));
+      memset(table, 0, 53 * sizeof(int));
       i = 0;
-      printf("===== END ==========\n");
     }
   }
   return sum;
@@ -139,8 +128,8 @@ int calculate_sum_of_priorities(char *file_name) {
 }
 
 int main() {
-  // assert(calculate_sum_of_priorities("sample_input") == 157);
-  // assert(calculate_sum_of_priorities("input") == 7997);
-  // assert(calculate_security_badge_priorities_sum("sample_input") == 70);
-  printf("%d\n", calculate_security_badge_priorities_sum("input"));
+  assert(calculate_sum_of_priorities("sample_input") == 157);
+  assert(calculate_sum_of_priorities("input") == 7997);
+  assert(calculate_security_badge_priorities_sum("sample_input") == 70);
+  assert(calculate_security_badge_priorities_sum("input") == 2545);
 }

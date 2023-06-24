@@ -28,10 +28,11 @@ int map_char_to_priority(char c) {
 }
 
 /*
- * We are counting every char in string & hence reach limit == 3 
- * What we need to do is increment by 1 per STRING, so we need 3 separate passes on the same table 
+ * We are counting every char in string & hence reach limit == 3
+ * What we need to do is increment by 1 per STRING, so we need 3 separate passes
+ * on the same table
  */
-int increment_table(char *str, int *table) {
+int increment_table(char *str, int *table, int max) {
   int len = strlen(str); // strlen() doesn't count \n or \0
   if (len == 0) {
     return 0;
@@ -40,10 +41,7 @@ int increment_table(char *str, int *table) {
   for (int i = 0; i < len; i++) {
     char_to_i = map_char_to_priority(str[i]);
     if (char_to_i == 0) {
-      printf("WE HAVE ZEEEER o char to i == [ %d ]\n", char_to_i);
-    }
-    if (char_to_i == 0) {
-      return 0;
+      continue;
     }
     if (char_to_i > 52) {
       printf("[ERROR] Found char outside of 0 -> 52 bound. Char value == [%d], "
@@ -51,11 +49,18 @@ int increment_table(char *str, int *table) {
              char_to_i);
       exit(1);
     }
-    table[char_to_i] += 1;
-    if (table[char_to_i] == 3) {
-      return char_to_i;
+    if (table[char_to_i] < max) {
+      table[char_to_i] += 1;
     }
   }
+  for (int y = 0; y < 52; y++) {
+    printf("%d", table[y]);
+  }
+  if (table[char_to_i] == 3) {
+    printf("[INFO] Found common char = [ %d ] ", char_to_i);
+    return char_to_i;
+  }
+  printf("\n");
   return 0;
 }
 
@@ -96,22 +101,19 @@ int calculate_security_badge_priorities_sum(char *file_name) {
   FILE *fh = fopen(file_name, "r");
   size_t buffer_size = 255;
   char buffer[buffer_size];
-  int i = 0;
   int table[52] = {0};
+  int i = 0;
+  int max = 1;
   int sum = 0;
-  int priority;
-  int group = 1;
   while (fgets(buffer, buffer_size, fh)) {
-    priority = increment_table(buffer, table);
-    printf("[INFO] Priority  == [ %d ]\n", priority);
+    sum += increment_table(buffer, table, max);
     i++;
-    // reset every 3 lines
+    max++;
+    printf("===============\n");
     if (i % 3 == 0) {
-      printf("[INFO] End of group [ %d ], priority = [ %d ]\n", group,
-             priority);
-      group++;
-      // sum += priority;
       memset(table, 0, 52 * sizeof(int));
+      i = 0;
+      max = 1;
     }
   }
   return sum;

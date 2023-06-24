@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <cstdlib>
 #include <cstring>
 #include <stdio.h>
 
@@ -23,25 +24,27 @@ int get_overlaps(char *file_name) {
   char buffer[buffer_size];
   int sum = 0;
   while (fgets(buffer, buffer_size, fp)) {
-    char *token = strtok(buffer, ",");
-    int left = token[0];
-    int right = token[2];
-    printf("[INFO] token = [ %s ]\n", token);
-    printf("[INFO] left = %c, right = %c\n", left, right);
-    token = strtok(NULL, ",");
-    int other_left = token[0];
-    int other_right = token[2];
-    int len = strlen(token);
-    token[len - 1] = '\0'; // remove trailing newline
-    printf("[INFO] token = [ %s ]\n", token);
-    printf("[INFO] other left = %c, other right = %c\n", other_left,
-           other_right);
+    char *left_side = strtok(buffer, ",");
+    char *right_side = strtok(NULL, ",");
+    printf("==== LEFT SIDE ==== [ %s ]\n", left_side);
+    int left = atoi(strtok(left_side, "-"));
+    printf(" left  = [ %d ]\n", left);
+    int right = atoi(strtok(NULL, "-"));
+    printf(" right  = [ %d ]\n", right);
+    printf("\n");
+    printf("==== RIGHT SIDE ==== [ %s ]", right_side); //fix => it has a trailing newline
+    int other_left = atoi(strtok(right_side, "-"));
+    printf(" other left = [ %d ]\n", other_left);
+    int other_right = atoi(strtok(NULL, "-"));
+    printf(" other right = [ %d ]\n", other_right);
     sum += is_overlapping(left, right, other_left, other_right);
   }
   return sum;
 }
 
-int main() { 
-  assert(get_overlaps("sample_input") == 2); 
-  printf("sum = %d ", get_overlaps("input") == 2);
+int main() {
+  assert(get_overlaps("sample_input") == 2);
+  assert(get_overlaps("small_input") == 0);
+  assert(get_overlaps("input") == 471);
+
 }

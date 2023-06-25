@@ -3,14 +3,14 @@
 #include <cstring>
 #include <stdio.h>
 
-int is_overlapping(int a, int b, int c, int d) {
+int is_completely_overlapping(int a, int b, int c, int d) {
   // check if two ranges, a-b && c-d contain each other
-  // eg. 3-3, 2-4 => 2-4 contains range 3-3, return true
-  // eg2. 1-3, 2,4 => 2,4 contains only part of 1-3, so return false
+  // eg. 3-3, 2-4 => 2-4 contains range 3-3, return 1
+  // eg2. 1-3, 2,4 => 2,4 contains only part of 1-3, so return 0
 
   // check if left side contains right side
   if (a <= c && b >= d) {
-    return true;
+    return 1;
     // check if right side contains right side
   } else if (c <= a && d >= b) {
     return 1;
@@ -18,7 +18,17 @@ int is_overlapping(int a, int b, int c, int d) {
   return 0;
 }
 
-int get_overlaps(char *file_name) {
+int is_partially_overlapping(int a, int b, int c, int d) {
+  if (a <= c && b >= c) {
+    // 57-93,9-57
+    return 1;
+  } else if (c <= a && d >=a) {
+    return 1;
+  }
+  return 0;
+}
+
+int get_overlaps(char *file_name, int (*calc_overlaps)(int, int, int, int)) {
   FILE *fp = fopen(file_name, "r");
   size_t buffer_size = 255;
   char buffer[buffer_size];
@@ -32,19 +42,19 @@ int get_overlaps(char *file_name) {
     int right = atoi(strtok(NULL, "-"));
     printf(" right  = [ %d ]\n", right);
     printf("\n");
-    printf("==== RIGHT SIDE ==== [ %s ]", right_side); //fix => it has a trailing newline
+    printf("==== RIGHT SIDE ==== [ %s ]",
+           right_side); // fix => it has a trailing newline
     int other_left = atoi(strtok(right_side, "-"));
     printf(" other left = [ %d ]\n", other_left);
     int other_right = atoi(strtok(NULL, "-"));
     printf(" other right = [ %d ]\n", other_right);
-    sum += is_overlapping(left, right, other_left, other_right);
+    sum += calc_overlaps(left, right, other_left, other_right);
   }
   return sum;
 }
 
 int main() {
-  assert(get_overlaps("sample_input") == 2);
-  assert(get_overlaps("small_input") == 0);
-  assert(get_overlaps("input") == 471);
-
+  assert(get_overlaps("sample_input", is_partially_overlapping) == 4);
+  assert(get_overlaps("small_input", is_partially_overlapping) == 1);
+  assert(get_overlaps("input", is_partially_overlapping) == 888);
 }

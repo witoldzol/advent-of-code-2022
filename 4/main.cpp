@@ -19,8 +19,13 @@ int is_completely_overlapping(int a, int b, int c, int d) {
 }
 
 int is_partially_overlapping(int a, int b, int c, int d) {
+  // example -> 57-93,9-57
+  // 57......93
+  //      9......57
+  //      OR 
+  // 9.......57
+  // 	  57......93
   if (a <= c && b >= c) {
-    // 57-93,9-57
     return 1;
   } else if (c <= a && d >=a) {
     return 1;
@@ -43,7 +48,7 @@ int get_overlaps(char *file_name, int (*calc_overlaps)(int, int, int, int)) {
     printf(" right  = [ %d ]\n", right);
     printf("\n");
     printf("==== RIGHT SIDE ==== [ %s ]",
-           right_side); // fix => it has a trailing newline
+           right_side);
     int other_left = atoi(strtok(right_side, "-"));
     printf(" other left = [ %d ]\n", other_left);
     int other_right = atoi(strtok(NULL, "-"));
@@ -54,6 +59,10 @@ int get_overlaps(char *file_name, int (*calc_overlaps)(int, int, int, int)) {
 }
 
 int main() {
+  assert(get_overlaps("sample_input", is_completely_overlapping) == 2);
+  assert(get_overlaps("small_input", is_completely_overlapping) == 0);
+  assert(get_overlaps("input", is_completely_overlapping) == 471);
+
   assert(get_overlaps("sample_input", is_partially_overlapping) == 4);
   assert(get_overlaps("small_input", is_partially_overlapping) == 1);
   assert(get_overlaps("input", is_partially_overlapping) == 888);

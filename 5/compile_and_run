@@ -1,2 +1,2 @@
 export LD_LIBRARY_PATH=/home/witold/repos/adventofcode2022/lib
-gcc -L/home/witold/repos/adventofcode2022/lib main.cpp -o main -l:libstack.so.1 && ./main
+gcc -L/home/witold/repos/adventofcode2022/lib main.cpp -o main.o -l:libstack.so.1 && ./main.o

@@ -5,41 +5,37 @@
 typedef struct Stack {
   int top = -1;
   int size;
-  int *data;
+  char *data;
 } Stack;
 
-int push(Stack *stack, int n) {
+char push(Stack *stack, char c) {
   if (stack->top >= stack->size + 1) {
     printf("Stack overflow! Stack size if = [ %d ], current top = [ %d ]\n",
            stack->size, stack->top);
     exit(1);
   }
   stack->top++;
-  stack->data[stack->top] = n;
-  printf("[INFO] Inserted %d at index %d\n", n, stack->top);
-  printf("[INFO] Value at index %d = %d\n", stack->top,
-         stack->data[stack->top]);
-  return n;
+  stack->data[stack->top] = c;
+  printf("[INFO] Inserted %c at index %d\n", c, stack->top);
+  return c;
 }
 
-int pop(Stack *stack) {
+char pop(Stack *stack) {
   if (stack->top < 0) {
-    printf("Stack underflow! Stack size if = [ %d ], current top = [ %d ]\n",
+    printf("Stack underflow! Stack size = [ %d ], current top = [ %d ]\n",
            stack->size, stack->top);
     exit(1);
   }
-  int temp = stack->data[stack->top];
+  char temp = stack->data[stack->top];
   stack->data[stack->top] = 0;
-  printf("[INFO] Popped %d at index %d\n", temp, stack->top);
+  printf("[INFO] Popped %c at index %d\n", temp, stack->top);
   stack->top--;
   return temp;
 }
 
-int top(Stack *stack) {
+char top(Stack *stack) {
   if (stack->top < 0) {
-    printf("Stack underflow! Stack size if = [ %d ], current top = [ %d ]\n",
-           stack->size, stack->top);
-    exit(1);
+    return '\0';
   }
   return stack->data[stack->top];
 }

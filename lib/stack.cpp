@@ -2,16 +2,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/* my datastructures */
 typedef struct Stack {
   int top = -1;
   int size;
   int *data;
 } Stack;
-
-// int push(int *stack, int n);
-int pop(int *stack, int n);
-int top(int *stack);
 
 int push(Stack *stack, int n) {
   if (stack->top >= stack->size + 1) {
@@ -40,10 +35,11 @@ int pop(Stack *stack) {
   return temp;
 }
 
-int main() {
-  int *data = (int *)malloc(4 * sizeof(int));
-  Stack mystack = {.size = 4, .data = data};
-  push(&mystack, 4);
-  int r = pop(&mystack);
-  // printf("popped === %d", r);
+int top(Stack *stack) {
+  if (stack->top < 0) {
+    printf("Stack underflow! Stack size if = [ %d ], current top = [ %d ]\n",
+           stack->size, stack->top);
+    exit(1);
+  }
+  return stack->data[stack->top];
 }

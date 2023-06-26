@@ -52,7 +52,6 @@ int main() {
   Stack stack7 = {.top = 7, .size = 100, .data = s7};
   Stack stack8 = {.top = 7, .size = 100, .data = s8};
   Stack stack9 = {.top = 3, .size = 100, .data = s9};
-
   Stack stacks[] = {
       stack1, stack2, stack3, stack4, stack5, stack6, stack7, stack8, stack9,
   };
@@ -60,6 +59,8 @@ int main() {
   int buffer_size = 255;
   char buffer[buffer_size];
   while (fgets(buffer, buffer_size, fh)) {
+    char temp[50] = {0}; // we use the temp stack to reverse the order of insertion
+    Stack temp_stack = {.size = 100, .data = temp};
     printf("line: %s", buffer);
     char *_ = strtok(buffer, " ");
     int move = atoi(strtok(NULL, " "));
@@ -72,6 +73,10 @@ int main() {
     printf("to: %d\n", to);
     for (int i = 0; i < move; i++) {
       char c = pop(&stacks[from - 1]);
+      push(&temp_stack, c);
+    }
+    for (int i = 0; i < move; i++) {
+      char c = pop(&temp_stack);
       push(&stacks[to - 1], c);
     }
     for (int i = 0; i < 9; i++) {

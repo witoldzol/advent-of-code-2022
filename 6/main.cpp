@@ -20,7 +20,7 @@ int zero_out_values(int arr[26][2], int index, int unique_count) {
   return unique_count;
 }
 
-int find_marker(char const *file_name) {
+int find_marker(char const *file_name, int marker) {
   FILE *fh = fopen(file_name, "r");
   int buffer_size = 10240;
   char buffer[buffer_size];
@@ -47,8 +47,8 @@ int find_marker(char const *file_name) {
       unique_count = zero_out_values(unique_chars, unique_chars[char_idx][1],
                                      unique_count);
     }
-    if (unique_count == 4) {
-      printf("[INFO] Marker after char at index = %d\n", i);
+    if (unique_count == marker) {
+      printf("[INFO] Marker after char at index = %d\n", i + 1);
       return i+1;
     }
     unique_chars[char_idx][0] = 1;
@@ -58,7 +58,8 @@ int find_marker(char const *file_name) {
 }
 
 int main() {
-  assert(find_marker("sample_input") == 7);
-  assert(find_marker("sample_input_2") == 5);
-  assert(find_marker("input") == 1282);
+  assert(find_marker("sample_input", 4) == 7);
+  assert(find_marker("sample_input_2", 4) == 5);
+  assert(find_marker("input", 4) == 1282);
+  assert(find_marker("input", 14) == 3513);
 }
